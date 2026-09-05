@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test use the built-in property-calibrated -->
+<!-- J2SE Platform and its associated ant tasks. -->
+<project name="QuanLyTKB_CNJ56" default="default" basedir=".">
+    <description>Xây dựng và chạy đồ án Quản lý thời khóa biểu và tài nguyên phòng học CNJ56</description>
+    <import file="nbproject/build-impl.xml"/>
+</project>

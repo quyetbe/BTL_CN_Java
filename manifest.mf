@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+X-COMMENT: Main-Class will be added automatically by build
+Main-Class: view.LoginForm
+Class-Path: lib/mysql-connector-j-8.3.0.jar
