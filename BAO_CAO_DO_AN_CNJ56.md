@@ -1,755 +1,534 @@
-# BÁO CÁO ĐỒ ÁN MÔN HỌC - ĐỀ TÀI CNJ56
-## XÂY DỰNG ỨNG DỤNG DESKTOP QUẢN LÝ THỜI KHÓA BIỂU VÀ TÀI NGUYÊN PHÒNG HỌC
+# B?O C?O ?? ?N M?N H?C - ?? T?I CNJ56
+## X?Y D?NG ?NG D?NG DESKTOP QU?N L? TH?I KH?A BI?U V? T?I NGUY?N PH?NG H?C
 
-> **Nhóm sinh viên thực hiện:** Nhóm 11 (2 thành viên)
-> **Mã đề tài:** CNJ56
-> **Công nghệ:** Java SE (Swing, Flat UI) + JDBC (Driver 8.3.0) + MySQL 8.0 (Localhost XAMPP)
+> **Nh?m sinh vi?n th?c hi?n:** Nh?m 11 (2 th?nh vi?n)  
+> **M? ?? t?i:** CNJ56  
+> **H?c ph?n:** C?ng ngh? Java  
+> **L?p t?n ch?:** C?NG NGH? JAVA-1-1-26(N05.THTT_IN_ELN.11)  
+> **Gi?ng vi?n h??ng d?n:** ThS. Tr?n Nguy?n Ho?ng  
+> **C?ng ngh?:** Java SE (Swing, Flat UI) + JDBC (Driver 8.3.0) + MySQL 8.0 (Localhost XAMPP)
 
 ---
 
-TRƯỜNG ĐẠI HỌC CÔNG NGHỆ ĐÔNG Á
-
-KHOA CÔNG NGHỆ THÔNG TIN
-
-BÀI TẬP LỚN
-
-HỌC PHẦN: CÔNG NGHỆ JAVA
-
-CHỦ ĐỀ 6: QUẢN LÝ ĐÀO TẠO
-
-ĐỀ TÀI CNJ56: XÂY DỰNG ỨNG DỤNG DESKTOP QUẢN LÝ THỜI KHÓA BIỂU VÀ TÀI NGUYÊN PHÒNG HỌC SỬ DỤNG JAVA SWING, JDBC VÀ MYSQL
-
-LỚP TÍN CHỈ: CÔNG NGHỆ JAVA-1-1-26(N05.THTT_IN_ELN.11)
-
-Giảng viên hướng dẫn: ThS. Trần Nguyên Hoàng
-
-Danh sách sinh viên thực hiện: Nhóm 11
-
-Bắc Ninh – 2026
-
-
-# DANH MỤC HÌNH ẢNH
-
-Hình 2.1 Biểu đồ phân cấp chức năng hệ thống (BFD) [Thiết kế trên Draw.io]	7
-
-Hình 2.2 Sơ đồ kiến trúc hệ thống phân tầng tích hợp Nhật ký hệ thống (Audit Log) [Thiết kế trên Draw.io]	9
-
-Hình 2.3 Mô hình liên kết thực thể	16
-
-Hình 2.4 Mô hình vật lý csdl	17
-
-Hình 3.1: Giao diện Đăng nhập hệ thống (LoginForm)	31
-
-Hình 3.2: Giao diện Trang chủ tổng quan Dashboard (DashboardPanel)	32
-
-Hình 3.3: Giao diện Lưới Thời Khóa Biểu Tuần trực quan (TimetableGridPanel)	32
-
-Hình 3.4: Giao diện Quản lý Danh sách Thời Khóa Biểu (ThoiKhoaBieuPanel)	33
-
-Hình 3.5: Hộp thoại Xếp lịch & Báo lỗi Xung đột (XepLichDialog)	34
-
-Hình 3.7: Giao diện Quản lý Giảng viên (GiangVienPanel)	35
-
-Hình 3.8: Giao diện Quản lý Môn học (MonHocPanel)	36
-
-Hình 3.9: Giao diện Quản lý Lớp học (LopHocPanel)	36
-
-Hình 3.10: Giao diện Thống kê Hiệu suất & Tra cứu Phòng trống (ThongKePanel)	37
-
-Hình 3.11: Giao diện Quản trị Tài khoản người dùng (TaiKhoanPanel)	38
-
-
-# DANH MỤC BẢNG BIỂU
-
-Bảng 1.1: Bảng phân công nhiệm vụ thực hiện đề tài (Nhóm 2 thành viên)	5
-
-Bảng 1.2: Ma trận tiến độ phối hợp triển khai 10 tuần	6
-
-Bảng 2.1: Mô tả màn hình Đăng nhập (LoginForm)	10
-
-Bảng 2.2: Mô tả màn hình Chính (MainForm)	10
-
-Bảng 2.3: Mô tả màn hình Lưới Thời Khóa Biểu (TimetableGridPanel)	11
-
-Bảng 2.4: Mô tả màn hình Xếp lịch TKB (ThoiKhoaBieuPanel & XepLichDialog)	12
-
-Bảng 2.5: Mô tả màn hình Thống kê & Tra cứu phòng trống (ThongKePanel)	14
-
-
-# LỜI MỞ ĐẦU
-
-Trong bối cảnh hiện đại hóa và chuyển đổi số giáo dục hiện nay, công tác quản lý đào tạo và sắp xếp thời khóa biểu tại các trường đại học, cao đẳng, trung tâm đào tạo đóng vai trò then chốt quyết định hiệu quả vận hành của toàn bộ nhà trường. Việc xếp lịch thủ công trên giấy tờ hoặc qua bảng tính Excel rời rạc thường bộc lộ rất nhiều hạn chế: dễ xảy ra xung đột lịch dạy của giảng viên, trùng phòng học, phân bổ phòng không tương thích với sĩ số lớp hoặc đặc thù môn học (lý thuyết/thực hành), gây lãng phí tài nguyên cơ sở vật chất và mất nhiều thời gian rà soát, điều chỉnh.
-
-Xuất phát từ nhu cầu thực tiễn đó, nhóm sinh viên đã lựa chọn và thực hiện đề tài mã số CNJ56: "Xây dựng ứng dụng desktop quản lý thời khóa biểu và tài nguyên phòng học". Ứng dụng được xây dựng trên nền tảng Java Swing (NetBeans IDE), kết nối cơ sở dữ liệu quan hệ MySQL thông qua JDBC, tích hợp thuật toán kiểm tra xung đột thời khóa biểu đa chiều và giao diện trực quan hóa dạng lưới tuần.
-
-Báo cáo này trình bày toàn diện quá trình nghiên cứu, phân tích nghiệp vụ, thiết kế kiến trúc hệ thống, thiết kế cơ sở dữ liệu chuẩn 3NF, cài đặt mã nguồn và quy trình kiểm thử nghiêm ngặt của đề tài.
-
-
-# CHƯƠNG 1. CƠ SỞ LÝ THUYẾT
-
-
-## 1.1.Giới thiệu về đề tài.
-
-1.1.1. Giới thiệu tổng quan
-
-Ứng dụng desktop Quản lý thời khóa biểu và tài nguyên phòng học (CNJ56) là phần mềm chuyên dụng hỗ trợ cán bộ phòng Đào tạo và bộ phận Quản trị cơ sở vật chất:
-
-- Quản lý toàn diện danh mục phòng học, thiết bị tài nguyên, giảng viên, môn học, lớp sinh viên.
-- Thực hiện lập lịch giảng dạy (thời khóa biểu) theo từng học kỳ, năm học, tuần, thứ và tiết học.
-- Tự động kiểm tra và ngăn chặn các loại xung đột: trùng phòng học, trùng giảng viên, trùng lớp học, phòng đang bảo trì, sức chứa phòng không đủ so với sĩ số, môn thực hành không đúng loại phòng máy tính.
-- Cung cấp Lưới thời khóa biểu tuần trực quan (Weekly Timetable Grid) giúp người dùng dễ dàng tra cứu theo Lớp, theo Phòng hoặc theo Giảng viên.
-- Thống kê hiệu suất sử dụng phòng học và công cụ tra cứu phòng học còn trống theo ca học.
-- Phân quyền bảo mật giữa Quản trị viên (ADMIN) và Nhân viên đào tạo (NHANVIEN).
-1.1.2. Kế hoạch thực hiện đề tài
-
-1.1.3. Thành viên nhóm & Phân công công việc (Nhóm 2 thành viên)
-
-
-## 1.2 Giải thuật, công cụ
-
-1.2.1. Thuật toán kiểm tra xung đột thời khóa biểu đa chiều
-
-Đây là thuật toán cốt lõi của hệ thống, xử lý bài toán xếp lịch trong không gian đa chiều: Thời gian (Học kỳ, Năm học, Tuần, Thứ, Tiết)  Tài nguyên (Phòng học)  Con người (Giảng viên, Lớp sinh viên).
-
-A. Định nghĩa toán học về sự giao nhau thời gian:
-
-Cho lịch học  có khoảng tiết  và khoảng tuần .
-Lịch học  đã có trong hệ thống với  và .
-
-Điều kiện giao thoa về Tuần học:  (Phủ định: Không giao nhau khi  hoặc )
-
-Điều kiện giao thoa về Tiết học:  (Trong đó: )
-
-Tổng hợp giao nhau về Thời gian ():
-
-B. Bộ quy tắc phát hiện vi phạm nghiệp vụ:
-
-Nếu  (và  khi sửa lịch):
-
-Xung đột Phòng học:  Báo lỗi vi phạm: Phòng đã có lớp khác học.
-
-Xung đột Giảng viên:  Báo lỗi vi phạm: Giảng viên đang giảng dạy lớp khác.
-
-Xung đột Lớp học:  Báo lỗi vi phạm: Lớp học đang có tiết môn khác.
-
-C. Các ràng buộc điều kiện cần bổ sung:
-
-Trạng thái phòng:  Từ chối xếp lịch.
-
-Loại phòng tương thích:  Từ chối xếp lịch.
-
-Sức chứa phòng:  Hiển thị cảnh báo trực quan xác nhận.
-
-
-## 1.3. Các công nghệ và công cụ sử dụng
-
-Đề tài áp dụng các công nghệ tiêu chuẩn, hiện đại trong hệ sinh thái Java doanh nghiệp và phát triển phần mềm:
-- **Ngôn ngữ lập trình**: Java SE (phiên bản 17 LTS trở lên), biên dịch và phát triển trên NetBeans IDE / IntelliJ IDEA.
-- **Giao diện người dùng (GUI)**: Thư viện Java Swing kết hợp gói tùy biến giao diện phẳng Flat UI (tự vẽ khử răng cưa, hỗ trợ hiển thị tối ưu font tiếng Việt Unicode Segoe UI, tự động tối ưu hiển thị Full màn hình `MAXIMIZED_BOTH`, ma trận lưới tuần tích hợp điều khiển tương tác thu phóng trực quan).
-- **Kết nối Cơ sở dữ liệu**: MySQL Connector/J 8.3.0, thực thi 100% qua JDBC `PreparedStatement` và cơ chế try-with-resources đảm bảo an toàn tuyệt đối trước SQL Injection và rò rỉ kết nối (Connection leak).
-- **Hệ quản trị CSDL**: MySQL Server 8.0 vận hành trên máy chủ cục bộ (XAMPP Localhost cổng 3306), thiết kế chuẩn hóa bậc 3 (3NF) với các ràng buộc khóa ngoại `ON DELETE RESTRICT` bảo vệ tính toàn vẹn dữ liệu.
-- **Công cụ thiết kế Kiến trúc & Sơ đồ**: Draw.io (diagrams.net) để mô hình hóa sơ đồ kiến trúc phân tầng chuẩn mực, sơ đồ luồng dữ liệu (Data Flow) và lược đồ quan hệ thực thể (ERD).
-- **Cơ chế an ninh & Ghi vết**: Thuật toán băm mật khẩu SHA-256 chống lộ lọt thông tin, cơ chế Interceptor bắt sự kiện tự động phục vụ ghi vết kiểm toán (Audit Log) chống chối bỏ trách nhiệm.
-
-
-## 1.4. Kế hoạch thực hiện đề tài (10 tuần)
-
-Đề tài được tiến hành trong thời gian 10 tuần với các giai đoạn nối tiếp khoa học:
-- **Tuần 1 - 2**: Khảo sát nghiệp vụ, phân tích yêu cầu bài toán quản lý thời khóa biểu và tài nguyên phòng học, xác định các tác nhân và luồng hoạt động.
-- **Tuần 3 - 4**: Thiết kế cơ sở dữ liệu quan hệ chuẩn 3NF, thiết kế sơ đồ kiến trúc hệ thống phân tầng trên công cụ Draw.io.
-- **Tuần 5 - 6**: Lập trình tầng Backend & DAO, cài đặt các lớp xử lý nghiệp vụ, xây dựng thuật toán kiểm tra xung đột thời khóa biểu 8 chiều.
-- **Tuần 7 - 8**: Lập trình tầng Giao diện (Java Swing Flat UI), xây dựng ma trận Lưới TKB tuần có thu phóng Zoom, phân tách chức năng Đề xuất đổi lịch, tích hợp thanh phân trang 20 mục/trang.
-- **Tuần 9**: Tích hợp toàn diện hệ thống, xây dựng bộ kiểm thử tự động 15 ca kiểm thử logic và hiệu năng, tối ưu hóa giao diện toàn màn hình.
-- **Tuần 10**: Hoàn thiện tài liệu báo cáo kỹ thuật, kiểm tra đối chiếu dữ liệu thực nghiệm và đóng gói sản phẩm.
-
-
-## 1.5. Phân công nhiệm vụ thực hiện đề tài (Nhóm 2 thành viên)
-
-Để bảo đảm tiến độ và chất lượng sản phẩm phần mềm, Nhóm 11 (gồm 2 thành viên) đã tiến hành phân chia nhiệm vụ cụ thể, tương xứng với năng lực chuyên môn của từng sinh viên theo mô hình phân tầng phát triển (Backend - Architecture & Frontend - QA):
-
-**Bảng 1.1: Bảng phân công nhiệm vụ thực hiện đề tài (Nhóm 2 thành viên)**
-
-| STT | Họ và tên | Mã sinh viên | Lớp hành chính | Vai trò đảm nhiệm | Nhiệm vụ chính & Tỷ lệ đóng góp |
-| :---: | :--- | :---: | :---: | :--- | :--- |
-| **1** | **Nguyễn Mạnh Quyết**<br>*(Trưởng nhóm)* | **20231053** | **DCCNTT.14.3** | Trưởng nhóm & Backend Developer / Kiến trúc sư hệ thống | • Lập kế hoạch dự án, phân rã chức năng nghiệp vụ đề tài CNJ56.<br>• Thiết kế mô hình dữ liệu quan hệ chuẩn 3NF và viết kịch bản `database.sql` (11 bảng, ràng buộc toàn vẹn).<br>• Thiết kế sơ đồ kiến trúc hệ thống phân tầng trên công cụ Draw.io (`kientruc_hethong_phantang.drawio`).<br>• Xây dựng tầng kết nối `DBConnection` (Singleton Pool) và toàn bộ 10 lớp DAO (JDBC `PreparedStatement` chống SQLi).<br>• Nghiên cứu và cài đặt thuật toán kiểm tra xung đột thời khóa biểu đa chiều 8 ràng buộc (`XepLichService`).<br>• Xây dựng cơ chế xác thực băm mật khẩu SHA-256 và phân quyền RBAC 6 vai trò (`AuthService`).<br>• Viết bộ kiểm thử tự động 15 ca kiểm thử logic và hiệu năng (`TestLogicRunner.java`).<br>➔ **Mức độ hoàn thành: 100% \| Tỷ lệ đóng góp: 50%** |
-| **2** | **Hà Thái Bảo**<br>*(Thành viên)* | **20231045** | **DCCNTT.14.3** | Thành viên & Frontend Developer / Kiểm thử phần mềm (QA) | • Thiết kế và xây dựng toàn bộ giao diện Desktop Java Swing theo phong cách Flat UI hiện đại.<br>• Xây dựng `MainForm` với thanh điều hướng thích ứng phân quyền, tự động phóng to toàn màn hình.<br>• Xây dựng ma trận Lưới thời khóa biểu tuần trực quan (`TimetableGridPanel`) tích hợp tính năng thu phóng Zoom chuột.<br>• Xây dựng toàn bộ các Form danh mục và hộp thoại (`ThoiKhoaBieuPanel`, `XepLichDialog`, `MonHocPanel`, `GiangVienPanel`, `SinhVienPanel`, `PhongHocPanel`, `LopHocPanel`, `CurriculumPanel`, `DeXuatDoiLichPanel`, `AuditLogPanel`, `TaiKhoanPanel`).<br>• Xây dựng component dùng chung thanh phân trang `PaginationBar` (20 mục/trang).<br>• Cài đặt `ThongKeService` (thống kê tải GV, quét phòng trống) và `ExportUtil` (xuất CSV/Excel UTF-8 BOM).<br>• Thiết kế kịch bản kiểm thử giao diện người dùng, kiểm tra biên và hoàn thiện tài liệu báo cáo đồ án.<br>➔ **Mức độ hoàn thành: 100% \| Tỷ lệ đóng góp: 50%** |
-
-<br>
-
-**Bảng 1.2: Ma trận tiến độ phối hợp triển khai 10 tuần**
-
-| Giai đoạn / Tuần | Nội dung công việc | Phụ trách chính | Phối hợp | Kết quả đầu ra |
-| :---: | :--- | :---: | :---: | :--- |
-| **Tuần 1 - 2** | Khảo sát bài toán, xác định yêu cầu nghiệp vụ TKB | Nguyễn Mạnh Quyết | Hà Thái Bảo | Bản đặc tả yêu cầu nghiệp vụ |
-| **Tuần 3 - 4** | Thiết kế CSDL 3NF & Vẽ kiến trúc hệ thống trên Draw.io | Nguyễn Mạnh Quyết | Hà Thái Bảo | Tệp `database.sql`, tệp Draw.io `kientruc_hethong_phantang.drawio` |
-| **Tuần 5 - 6** | Lập trình Backend, DAO, Engine giải thuật xung đột TKB | Nguyễn Mạnh Quyết | Hà Thái Bảo | Module Service & DAO, thuật toán xếp lịch |
-| **Tuần 7 - 8** | Lập trình giao diện Java Swing Flat UI, Lưới tuần Zoom, Phân trang | Hà Thái Bảo | Nguyễn Mạnh Quyết | Toàn bộ giao diện Swing & Dashboard |
-| **Tuần 9** | Tích hợp hệ thống, kiểm thử tự động 15 Test Case | Nguyễn Mạnh Quyết | Hà Thái Bảo | `TestLogicRunner.java` (Pass 15/15) |
-| **Tuần 10** | Đóng gói sản phẩm, hoàn thiện báo cáo và Slide thuyết trình | Hà Thái Bảo | Nguyễn Mạnh Quyết | Báo cáo DOCX, sơ đồ hình ảnh hoàn chỉnh |
-
-<br>
-
-**Đánh giá chung về kết quả phối hợp của nhóm 2 thành viên:**
-- Cả hai sinh viên Nguyễn Mạnh Quyết và Hà Thái Bảo đều chủ động, bám sát kế hoạch tiến độ 10 tuần, phối hợp nhịp nhàng giữa tầng Backend (Xử lý thuật toán, CSDL) và tầng Frontend (Giao diện Java Swing, Trực quan hóa).
-- Toàn bộ 15/15 bài kiểm thử Unit Test đều vượt qua thành công, hệ thống vận hành trơn tru với dữ liệu thực nghiệm 690 lịch học, 2.000 sinh viên, 506 giảng viên, 40 lớp học và 20 phòng học, không xảy ra bất kỳ xung đột nào.
-- Mức độ hoàn thành của cả hai thành viên đạt **100%** khối lượng công việc được giao với tỷ lệ đóng góp đồng đều **50% - 50%**.
-
-
-## 1.6. Kết chương
-
-Chương 1 đã làm rõ bối cảnh thực tiễn, mục tiêu đề tài, kế hoạch triển khai 10 tuần, bảng phân công chi tiết nhiệm vụ cho 2 thành viên trong nhóm, cùng nền tảng lý thuyết và công thức toán học về giải thuật kiểm tra xung đột thời khóa biểu. Đây là tiền đề vững chắc cho việc thiết kế kiến trúc và hiện thực hóa chương trình ở các chương tiếp theo.
-
-
-# CHƯƠNG 2. THIẾT KẾ VÀ XÂY DỰNG CHƯƠNG TRÌNH
-
-
-## 2.1. Phân tích yêu cầu bài toán
-
-2.1.1. Tác nhân hệ thống (Actors)
-
-Quản trị viên (ADMIN): Có toàn quyền trong hệ thống. Quản lý danh mục cơ sở (Phòng, Giảng viên, Môn học, Lớp), xếp và chỉnh sửa thời khóa biểu, thống kê báo cáo, quản trị tài khoản và phân quyền người dùng.
-
-Nhân viên đào tạo (NHANVIEN): Phụ trách lập lịch giảng dạy, tra cứu thời khóa biểu, tra cứu phòng trống, xuất báo cáo. Bị giới hạn không được xóa các danh mục gốc và không có quyền truy cập Quản trị tài khoản.
-
-2.1.2. Biểu đồ phân cấp chức năng hệ thống (Business Function Diagram - BFD)
-
-Biểu đồ phân cấp chức năng (Business Function Diagram - BFD) được thiết kế chi tiết bằng công cụ Draw.io (tệp mã nguồn sơ đồ được lưu trữ tại `docs/architecture/bieudo_phancap_chucnang.drawio`) nhằm mô hình hóa toàn diện cây phân cấp nghiệp vụ của Đề tài CNJ56. Hệ thống được phát triển từ nút gốc trung tâm **"HỆ THỐNG QUẢN LÝ THỜI KHÓA BIỂU VÀ TÀI NGUYÊN PHÒNG HỌC"** và phân rã đối xứng thành 7 phân hệ chính với 38 chức năng chi tiết:
-
-1. **Trục phân nhánh hướng lên (3 phân hệ nghiệp vụ & quản trị vận hành)**:
-   - **Báo cáo và thống kê**: Thống kê tải giảng dạy của giảng viên (tiết/tuần), thống kê tỷ lệ lấp đầy & hiệu suất phòng học, tra cứu phòng học trống theo ca thời gian thực, xuất báo cáo thời khóa biểu dạng tệp CSV hoặc Excel (chuẩn UTF-8 BOM).
-   - **Xếp lịch và thời khóa biểu**: Lập lịch và xếp ca học mới, tra cứu và lọc TKB đa chiều (Khóa, Lớp, GV, Phòng), trực quan hóa ma trận Lưới TKB tuần tích hợp tính năng thu phóng Zoom chuột, phân bổ phòng học tương thích loại môn (Lý thuyết / Thực hành), kiểm tra xung đột lịch học 8 chiều theo thời gian thực, ngăn chặn trùng phòng/GV/lớp, chỉnh sửa thông tin ca học và hủy lịch/xóa TKB.
-   - **Tiện ích hạ tầng & Kiểm toán**: Quản lý kết nối CSDL (DBConnection Singleton Pool), khởi tạo cấu trúc bảng và nạp seed data mẫu, mã hóa băm mật khẩu chuẩn SHA-256 an toàn, ghi vết nhật ký hệ thống tự động (Audit Log), cơ chế chống chối bỏ trách nhiệm (Non-repudiation) và kiểm tra xác thực dữ liệu nhập (Validation).
-
-2. **Trục phân nhánh hướng xuống (4 phân hệ quản trị danh mục & luồng phê duyệt)**:
-   - **Quản lý tài khoản người dùng**: Đăng nhập và xác thực hệ thống, tạo tài khoản người dùng mới, chỉnh sửa thông tin tài khoản, khóa hoặc xóa tài khoản, phân quyền vai trò người dùng (RBAC 6 vai trò: Admin, Trưởng khoa, Cán bộ PĐT, Giảng viên, Sinh viên, Khách).
-   - **Quản lý phòng học & thiết bị**: Thêm phòng học mới vào CSDL, sửa thông tin và sức chứa phòng, xóa phòng học khỏi danh mục, thiết lập trạng thái hoạt động / bảo trì, phân loại phòng học (Phòng lý thuyết / Phòng máy tính thực hành).
-   - **Quản lý danh mục đào tạo**: Quản lý danh sách 506 Giảng viên (Thêm/Sửa/Xóa), quản lý danh mục 50 Môn học (130 tín chỉ chuẩn), quản lý 40 Lớp học và 2.000 Sinh viên (4 khóa K21 - K24), quản lý khung Chương trình đào tạo chuẩn 4 năm (8 học kỳ), liên kết và phân công giảng viên chuyên trách bộ môn.
-   - **Đề xuất và duyệt đổi lịch**: Giảng viên gửi đơn đề xuất đổi ca dạy, kiểm tra xung đột ca dạy mới tự động, Cán bộ Khoa thẩm định và duyệt sơ bộ, Phòng Đào tạo phê duyệt chốt cuối, tự động hoán đổi và cập nhật TKB.
-
-
-**Hình 2.1: Biểu đồ phân cấp chức năng hệ thống (Business Function Diagram - BFD) [Thiết kế trên Draw.io]**
-
-![Hình 2.1: Biểu đồ phân cấp chức năng hệ thống (BFD) - Draw.io](docs/images/hinh_2_1_bieudo_phancap_chucnang.png)
-
-
-## 2.2 Kiến trúc hệ thống phân tầng (Layered Architecture)
-
-Hệ thống Quản lý thời khóa biểu và tài nguyên phòng học (Đề tài CNJ56, Nhóm 11) được thiết kế theo mô hình Kiến trúc Phân tầng (Layered Architecture) chuẩn công nghiệp, kết hợp tầng Điều hướng (Controller Layer) và Trục An ninh - Bổ trợ (Cross-Cutting Concerns) chạy dọc toàn bộ hệ thống. Kiến trúc này đảm bảo tính đóng gói, dễ bảo trì, dễ mở rộng và tuân thủ các nguyên lý thiết kế Clean Architecture. *(Ghi chú: Toàn bộ sơ đồ kiến trúc phân tầng được thiết kế chi tiết bằng công cụ Draw.io (diagrams.net), tệp mã nguồn sơ đồ được lưu trữ tại `docs/architecture/kientruc_hethong_phantang.drawio` để tiện theo dõi và hiệu chỉnh).*
-
-2.2.1. Phân tích chi tiết các tầng kiến trúc:
-1. Tầng Trình diễn (Presentation Layer - Java Swing & Flat UI): Chịu trách nhiệm tương tác người dùng. Giao diện được xây dựng trên nền tảng Java Swing hiện đại với bộ nút bấm FlatButton tự vẽ khử răng cưa. Bao gồm LoginForm, MainForm (điều hành chính qua CardLayout), TimetableGridPanel (ma trận 12 tiết x 7 ngày, tích hợp tính năng UX tương tác: giữ phím Shift + cuộn chuột MouseWheel để zoom in / zoom out mượt mà), ThoiKhoaBieuPanel (lọc đa chiều), ScheduleSwapPanel (giao diện xin và duyệt đổi lịch), NhatKyPanel (tra cứu và xuất báo cáo kiểm toán), PhongHocPanel, GiangVienPanel, MonHocPanel, LopHocPanel, ThongKePanel, TaiKhoanPanel (chỉ dành riêng Admin), và DatabaseToolPanel (thao tác DDL cấu trúc bảng và reset seed data trực tiếp từ ứng dụng).
-2. Tầng Điều hướng & Tiếp nhận (Controller Layer): Đóng vai trò cầu nối trung gian (Request Dispatcher), tiếp nhận sự kiện từ các Panel/Dialog, trích xuất dữ liệu form, kiểm tra hợp lệ sơ bộ và ủy quyền xử lý cho Tầng Service: AuthController, ScheduleController, ScheduleSwapController, AuditLogController, AccountController, CurriculumController, DatabaseToolController.
-3. Tầng Nghiệp vụ (Service / Business Logic Layer): Là hạt nhân xử lý toàn bộ logic và thuật toán của hệ thống:
-   - AuthService: Quản lý phiên đăng nhập và phân quyền RBAC nghiêm ngặt. Quy định cốt lõi: Quản trị viên (Admin) CHỈ quản lý tài khoản người dùng (tạo mới, cấp quyền, khóa tài khoản, reset mật khẩu); tuyệt đối không có quyền can thiệp vào chuyên môn xếp lịch.
-   - XepLichService: Engine kiểm tra xung đột lịch học 8 chiều theo thời gian thực (trùng phòng, trùng giảng viên, trùng lớp, lồng ca, giao nhau 1 tiết, sai loại phòng thực hành, phòng đang bảo trì, vượt sức chứa).
-   - ApprovalWorkflowService: Xử lý quy trình phê duyệt đổi lịch 2 cấp nghiêm ngặt: Giảng viên gửi đơn đổi ca -> Cán bộ Khoa thẩm định sơ bộ -> Phòng Đào tạo phê duyệt chốt cuối -> Cập nhật CSDL.
-   - AuditLogService: Dịch vụ ghi vết kiểm toán chống chối bỏ (Non-repudiation) hoạt động song song với mọi nghiệp vụ.
-   - CurriculumService: Quản lý chương trình đào tạo 4 năm chuẩn (4 khóa K1 đến K4; 8 học kỳ HK1 đến HK8) cho 1 khoa trọng điểm, phục vụ quy mô 2.000 Sinh viên (chỉ có quyền xem lịch) và 500 Giảng viên (nhập lịch, xin đổi lịch).
-   - ThongKeService: Đo lường hiệu suất phòng theo công thức 72 tiết/tuần và thuật toán quét phòng trống tức thời.
-4. Tầng Truy cập Dữ liệu (DAO Layer - JDBC PreparedStatement): Thực thi các thao tác CRUD và truy vấn CSDL: TaiKhoanDAO, ThoiKhoaBieuDAO, ScheduleSwapDAO, NhatKyDAO, CurriculumDAO, PhongHocDAO, GiangVienDAO, MonHocDAO, LopHocDAO, DatabaseToolDAO. Áp dụng 100% PreparedStatement và try-with-resources đảm bảo an toàn tuyệt đối trước SQL Injection và rò rỉ kết nối.
-5. Tầng Thực thể (Model Layer - Plain Old Java Objects): Ánh xạ quan hệ thực thể trong CSDL: TaiKhoan, ThoiKhoaBieu, DonDoiLich, NhatKyHeThong, ChuongTrinhDaoTao, PhongHoc, GiangVien, MonHoc, LopHoc.
-6. Cơ sở dữ liệu quan hệ (Database Tier - MySQL 8.0 Localhost): CSDL quan hệ chuẩn 3NF 'quanly_tkb_cnj56' chạy trên MySQL 8.0 (XAMPP Localhost cổng 3306), kết nối qua MySQL Connector/J 8.3.0 với các ràng buộc toàn vẹn khóa ngoại ON DELETE RESTRICT.
-7. Trục Bổ trợ & An ninh (Cross-Cutting Concerns): Chạy dọc xuyên suốt các tầng: AuditLogInterceptor (bắt sự kiện tự động), DBConnection (Singleton connection pool), PasswordUtil (mã hóa SHA-256 / BCrypt Salt), ExportUtil (xuất CSV/Excel UTF-8 BOM \uFEFF), ValidationUtil (kiểm định dữ liệu đầu vào), UIUtil (tối ưu hiển thị đồ họa vector FlatButton).
-
-2.2.2. Chi tiết Module Nhật Ký Hệ Thống (Audit Log) & Cơ chế chống chối bỏ (Non-repudiation):
-Module Nhật ký hệ thống được xây dựng như một cơ chế bảo vệ an ninh và kiểm toán độc lập. Khi bất kỳ tác vụ trọng yếu nào diễn ra (Đăng nhập, đăng xuất, đổi mật khẩu, thêm/sửa/xóa lịch học, phê duyệt hoặc từ chối đổi lịch, can thiệp cấu trúc bảng hoặc reset CSDL), AuditLogInterceptor sẽ tự động chặn bắt và kích hoạt AuditLogService. Dữ liệu ghi vết bao gồm: mã người dùng, hành động thực hiện, mô tả chi tiết trạng thái cũ -> mới, địa chỉ IP (localhost/127.0.0.1) và dấu thời gian chính xác (timestamp). Bảng nhat_ky_he_thong được thiết lập chỉ cho phép ghi nhận (INSERT) và đọc tra cứu (SELECT), nghiêm cấm mọi hành vi chỉnh sửa (UPDATE) hay xóa bản ghi (DELETE) để đảm bảo tính bất biến (Immutability) và chống chối bỏ trách nhiệm.
-
-2.2.3. Hai luồng xử lý nổi bật trong hệ thống:
-- Luồng 1 (Approval Flow - Duyệt đổi lịch 2 cấp): Giảng viên gửi đơn xin đổi ca qua ScheduleSwapPanel -> C_Swap chuyển sang ApprovalWorkflowService -> Kiểm tra xung đột thời gian qua XepLichService -> Cán bộ Khoa duyệt sơ bộ -> Phòng Đào tạo duyệt chốt cuối -> ScheduleSwapDAO cập nhật bảng don_doi_lich và hoán đổi dữ liệu trong thoi_khoa_bieu.
-- Luồng 2 (Audit Trail Flow - Ghi vết kiểm toán tự động): Mọi thao tác tại tầng UI/Service đều tự động kích hoạt AuditLogService thông qua AuditLogInterceptor -> NhatKyDAO thực thi lưu bản ghi NhatKyHeThong vào bảng nhat_ky_he_thong trong CSDL MySQL. Cán bộ quản lý có thể tra cứu lịch sử và xuất file Excel/CSV chuẩn UTF-8 BOM bất kỳ lúc nào.
-
-
-**Hình 2.2: Sơ đồ kiến trúc hệ thống phân tầng tích hợp Nhật ký hệ thống (Audit Log) [Thiết kế trên Draw.io]**
-
-![Hình 2.2: Sơ đồ kiến trúc hệ thống phân tầng tích hợp Nhật ký hệ thống (Audit Log) - Draw.io](docs/images/hinh_2_2_kientruc_hethong_moi.png)
-
-
-## 2.3 Thiết kế giao diện
-
-2.3.1. Bảng mô tả chi tiết các màn hình chính
-
-
-**Bảng 2.1: Mô tả màn hình Đăng nhập (LoginForm)**
-
-
-**Bảng 2.2: Mô tả màn hình Chính (MainForm)**
-
-
-**Bảng 2.3: Mô tả màn hình Lưới Thời Khóa Biểu (TimetableGridPanel)**
-
-
-**Bảng 2.4: Mô tả màn hình Xếp lịch TKB (ThoiKhoaBieuPanel & XepLichDialog)**
-
-
-**Bảng 2.5: Mô tả màn hình Thống kê & Tra cứu phòng trống (ThongKePanel)**
-
-
-## 2.4. Thiết kế cơ sở dữ liệu
-
-2.4.1. Sơ đồ liên kết thực thể (ERD)
-
-- Quan hệ to_chuc_tai ():
-- Một Phòng học (phong_hoc) có thể được xếp lịch tổ chức cho nhiều () buổi học khác nhau trong tuần/kỳ.
-- Mỗi bản ghi Lịch học (thoi_khoa_bieu) tại một thời điểm nhất định chỉ được diễn ra tại đúng một () phòng học.
-- Quan hệ giang_day ():
-- Một Giảng viên (giang_vien) có thể phụ trách giảng dạy nhiều () ca học trong học kỳ.
-- Mỗi bản ghi Lịch học cụ thể được phân công cho một () giảng viên đứng lớp.
-- Quan hệ thuoc_mon ():
-- Một Môn học (mon_hoc) có thể được mở và xếp lịch cho nhiều () lớp học khác nhau.
-- Mỗi bản ghi Lịch học thuộc về một () môn học duy nhất.
-- Quan hệ tham_gia ():
-- Một Lớp sinh viên (lop_hoc) có thời khóa biểu gồm nhiều () buổi học trong tuần.
-- Mỗi bản ghi Lịch học được xếp cho một () lớp sinh viên tham gia học.
-
-**Hình 2.3 Mô hình liên kết thực thể**
-
-
-**Hình 2.4 Mô hình vật lý csdl**
-
-2.4.2. Thiết kế bảng Nhật ký hệ thống (Audit Log) & Đơn đổi lịch:
-Để phục vụ cơ chế kiểm toán chống chối bỏ và quy trình phê duyệt đổi lịch 2 cấp, cơ sở dữ liệu được mở rộng thêm hai bảng vật lý độc lập liên kết chặt chẽ với các bảng danh mục:
-1. Bảng 'nhat_ky_he_thong': Lưu trữ toàn bộ dấu vết thao tác của người dùng. Các trường dữ liệu gồm: id (INT PK Auto-Increment), ma_nguoi_dung (VARCHAR(50) FK -> tai_khoan), hanh_dong (VARCHAR(50) - LOGIN, THEM_LICH, SUA_LICH, XOA_LICH, DUYET_DOI_LICH, TU_CHOI_LICH, THAY_DOI_DB, KHOA_TAI_KHOAN), mo_ta_chi_tiet (TEXT - ghi nhận chi tiết giá trị cũ -> giá trị mới), dia_chi_ip (VARCHAR(45) - IP máy trạm thao tác), thoi_gian_tao (DATETIME Default CURRENT_TIMESTAMP).
-2. Bảng 'don_doi_lich': Quản lý quy trình duyệt đổi lịch 2 cấp giữa Giảng viên, Khoa và Phòng Đào tạo. Các trường dữ liệu gồm: id (INT PK), ma_tkb_goc (INT FK -> thoi_khoa_bieu), ma_gv_de_xuat (VARCHAR(20) FK -> giang_vien), tiet_moi, thu_moi, tuan_moi, ma_phong_moi (thông tin ca học đề xuất chuyển tới), trang_thai_duyet (CHO_KHOA_DUYET, CHO_DAO_TAO_DUYET, DA_DUYET, TU_CHOI), nguoi_duyet_khoa, nguoi_duyet_daotao, ghi_chu, ngay_tao.
-
-
-## 2.5. Tổ chức dự án, mô tả file mã nguồn
-
-2.5.1. Cấu trúc cây thư mục dự án (NetBeans Project Structure)
-
-Dự án được tổ chức theo chuẩn NetBeans Standard Java SE Ant Project với cấu trúc thư mục rõ ràng, phân định mạch lạc giữa mã nguồn, thư viện phụ thuộc, kịch bản cơ sở dữ liệu và bộ kiểm thử:
-
-`
-QuanLyTKB_CNJ56/
-├── nbproject/                          # Cấu hình Ant Project cho NetBeans IDE
-├── docs/                               # Tài liệu kiến trúc & hình ảnh báo cáo
-│   ├── architecture/
-│   │   └── system_architecture_layered.puml # Mã nguồn sơ đồ phân tầng PlantUML
-│   └── images/
-│       └── hinh_2_2_kientruc_hethong_moi.png # Ảnh kiến trúc hệ thống tích hợp Audit Log
-├── build.xml                           # Script build Apache Ant (compile, jar, test, clean)
-├── manifest.mf                         # Khai báo Main-Class: view.LoginForm
-├── lib/
-│   └── mysql-connector-j-8.3.0.jar     # Driver JDBC kết nối Java SE với CSDL MySQL
-├── database.sql                        # Script SQL tạo CSDL quan hệ 3NF + Seed data + Audit Log
-├── test/
-│   └── TestLogicRunner.java            # Bộ kiểm thử Unit Test tự động cho thuật toán xung đột
-├── src/                                # Toàn bộ mã nguồn chính của ứng dụng
-│   ├── connection/                     # Tầng kết nối CSDL (Connection Manager)
-│   │   └── DBConnection.java
-│   ├── controller/                     # Tầng điều hướng & tiếp nhận yêu cầu (Controller)
-│   │   ├── AuthController.java
-│   │   ├── ScheduleController.java
-│   │   ├── ScheduleSwapController.java
-│   │   ├── AuditLogController.java
-│   │   ├── AccountController.java
-│   │   ├── CurriculumController.java
-│   │   └── DatabaseToolController.java
-│   ├── service/                        # Tầng xử lý nghiệp vụ (Business Logic Service)
-│   │   ├── AuthService.java
-│   │   ├── XepLichService.java
-│   │   ├── ApprovalWorkflowService.java
-│   │   ├── AuditLogService.java
-│   │   ├── CurriculumService.java
-│   │   └── ThongKeService.java
-│   ├── dao/                            # Tầng truy xuất dữ liệu (Data Access Objects)
-│   │   ├── TaiKhoanDAO.java
-│   │   ├── ThoiKhoaBieuDAO.java
-│   │   ├── ScheduleSwapDAO.java
-│   │   ├── NhatKyDAO.java
-│   │   ├── CurriculumDAO.java
-│   │   ├── PhongHocDAO.java
-│   │   ├── GiangVienDAO.java
-│   │   ├── MonHocDAO.java
-│   │   ├── LopHocDAO.java
-│   │   └── DatabaseToolDAO.java
-│   ├── model/                          # Tầng thực thể dữ liệu (POJO Entities)
-│   │   ├── TaiKhoan.java
-│   │   ├── ThoiKhoaBieu.java
-│   │   ├── DonDoiLich.java
-│   │   ├── NhatKyHeThong.java
-│   │   ├── ChuongTrinhDaoTao.java
-│   │   ├── PhongHoc.java
-│   │   ├── GiangVien.java
-│   │   ├── MonHoc.java
-│   │   └── LopHoc.java
-│   ├── util/                           # Tầng an ninh & tiện ích dùng chung (Cross-Cutting)
-│   │   ├── PasswordUtil.java
-│   │   ├── ValidationUtil.java
-│   │   ├── ExportUtil.java
-│   │   ├── UIUtil.java
-│   │   └── AuditLogInterceptor.java
-│   └── view/                           # Tầng giao diện người dùng (Presentation - Java Swing)
-│       ├── LoginForm.java
-│       ├── MainForm.java
-│       ├── dialog/                     # Hộp thoại Modal nhập liệu & nghiệp vụ
-│       │   ├── PhongHocDialog.java
-│       │   ├── GiangVienDialog.java
-│       │   ├── MonHocDialog.java
-│       │   ├── LopHocDialog.java
-│       │   ├── XepLichDialog.java
-│       │   ├── ScheduleSwapDialog.java
-│       │   ├── DatabaseToolDialog.java
-│       │   └── TaiKhoanDialog.java
-│       └── panel/                      # Các phân hệ chức năng dạng Panel nhúng
-│           ├── DashboardPanel.java
-│           ├── TimetableGridPanel.java # Lưới TKB tuần (hỗ trợ Shift+Scroll Zoom)
-│           ├── ThoiKhoaBieuPanel.java
-│           ├── ScheduleSwapPanel.java  # Giao diện xin & duyệt đổi lịch 2 cấp
-│           ├── NhatKyPanel.java        # Giao diện tra cứu & xuất Audit Log
-│           ├── PhongHocPanel.java
-│           ├── GiangVienPanel.java
-│           ├── MonHocPanel.java
-│           ├── LopHocPanel.java
-│           ├── ThongKePanel.java
-│           ├── TaiKhoanPanel.java      # Quản trị User - Dành riêng Admin
-│           └── DatabaseToolPanel.java  # Thao tác cấu trúc bảng & Reset Seed
-└── README.md
-`
-
-2.5.2. Bảng mô tả chi tiết vai trò từng file mã nguồn
-
-
-# CHƯƠNG 3. PHÁT TRIỂN HỆ THỐNG VÀ KIỂM THỬ
-
-
-## 3.1. Tầng Trình diễn (Presentation Layer / View)
-
-Xây dựng hoàn toàn bằng Java Swing với FlatButton tự vẽ đồ họa vector khử răng cưa.
-
-Giao diện dạng thẻ (CardLayout) kết nối trực tiếp với 9 Panel chuyên biệt.
-
-3.1.1. Các Form và Panel trong hệ thống
-
-Cửa sổ gốc (Frames): LoginForm (Đăng nhập), MainForm (Điều hành chính).
-
-9 Panel chức năng: DashboardPanel, TimetableGridPanel (Lưới TKB tuần), ThoiKhoaBieuPanel, PhongHocPanel, GiangVienPanel, MonHocPanel, LopHocPanel, ThongKePanel, TaiKhoanPanel.
-
-6 Hộp thoại             Modal: PhongHocDialog, GiangVienDialog, MonHocDialog, LopHocDialog, XepLichDialog, TaiKhoanDialog.
-
-
-## 3.2 Tầng Nghiệp vụ (Business Logic / Service Layer)
-
-Các class nghiệp vụ có trong hệ thống, như xử lý, báo cáo, thống kê:
-
-AuthService: Xác thực đăng nhập, quản lý phiên làm việc (Session Management) và phân quyền Admin/Nhân viên.
-
-XepLichService: Động cơ xếp lịch và kiểm tra xung đột thời khóa biểu đa chiều.
-
-ThongKeService: Xử lý thống kê hiệu suất sử dụng tài nguyên và thuật toán lọc phòng trống.
-
-Cài đặt XepLichService chứa logic kiểm tra overlap 2 chiều: khoảng tuần  và khoảng tiết .
-
-ThongKeService: Phân tích hiệu suất theo công thức  và thuật toán lọc phòng trống tức thời.
-
-Code đặc trưng 1: Thuật toán kiểm tra giao thoa khoảng thời gian (XepLichService.java)
-
-Code đặc trưng 2: Hàm kiểm tra xung đột thời khóa biểu đa chiều (XepLichService.java)
-
-public ConflictResult validateAndCheckConflict(ThoiKhoaBieu target, Integer excludeId) {
-
-// 1. Kiểm tra trạng thái phòng học
-
-PhongHoc phong = phongHocDAO.getById(target.getMaPhong());
-
-if (!"DANG_SU_DUNG".equalsIgnoreCase(phong.getTrangThai())) {
-
-return ConflictResult.error("Phòng học [" + target.getMaPhong() + "] đang BẢO TRÌ/NGỪNG DÙNG!", null);
-
-}
-
-// 2. Kiểm tra môn thực hành bắt buộc phải xếp vào phòng thực hành máy tính
-
-MonHoc mon = monHocDAO.getById(target.getMaMon());
-
-if (mon.isThucHanh() && !"THUC_HANH".equalsIgnoreCase(phong.getLoaiPhong())) {
-
-return ConflictResult.error("Môn [" + mon.getTenMon() + "] là Thực hành, bắt buộc xếp phòng THỰC HÀNH!", null);
-
-}
-
-// 3. Kiểm tra sức chứa phòng vs Sĩ số lớp
-
-LopHoc lop = lopHocDAO.getById(target.getMaLop());
-
-if (phong.getSucChua() < lop.getSiSo()) {
-
-return ConflictResult.warning("CẢNH BÁO: Sức chứa phòng " + phong.getSucChua() + " chỗ < Sĩ số lớp " + lop.getSiSo() + " SV!");
-
-}
-
-// 4. Quét danh sách lịch đã có để phát hiện trùng lặp
-
-List<ThoiKhoaBieu> existingList = thoiKhoaBieuDAO.getSchedulesForConflictCheck(
-
-target.getHocKy(), target.getNamHoc(), target.getThuTrongTuan()
-
-);
-
-int targetStart = target.getTietBatDau();
-
-int targetEnd = target.getTietBatDau() + target.getSoTiet() - 1;
-
-for (ThoiKhoaBieu exist : existingList) {
-
-if (excludeId != null && exist.getId() == excludeId) continue;
-
-if (isWeekOverlapping(target.getTuanBatDau(), target.getTuanKetThuc(), exist.getTuanBatDau(), exist.getTuanKetThuc())
-
-&& isTimeOverlapping(targetStart, targetEnd, exist.getTietBatDau(), exist.getTietKetThuc())) {
-
-if (target.getMaPhong().equalsIgnoreCase(exist.getMaPhong())) {
-
-return ConflictResult.error("[XUNG ĐỘT PHÒNG HỌC] Phòng " + exist.getMaPhong() + " đã có lịch dạy!", exist);
-
-}
-
-if (target.getMaGv().equalsIgnoreCase(exist.getMaGv())) {
-
-return ConflictResult.error("[XUNG ĐỘT GIẢNG VIÊN] Giảng viên " + exist.getHoTenGv() + " đang dạy lớp khác!", exist);
-
-}
-
-if (target.getMaLop().equalsIgnoreCase(exist.getMaLop())) {
-
-return ConflictResult.error("[XUNG ĐỘT LỚP HỌC] Lớp " + exist.getTenLop() + " đang học môn khác!", exist);
-
-}
-
-}
-
-}
-
-return ConflictResult.success();
-
-}    return ConflictResult.success();
-
-}
-
-Code đặc trưng 3: Thuật t	oán tính tỷ lệ sử dụng phòng học (ThongKeService.java)
-
-public List<PhongSuDungDTO> thongKeTyLeSuDungPhong(String hocKy, String namHoc) {
-
-List<PhongHoc> allRooms = phongHocDAO.getAll();
-
-List<PhongSuDungDTO> result = new ArrayList<>();
-
-final int MAX_SLOTS_PER_WEEK = 72; // 12 tiết/ngày x 6 ngày (Thứ 2 - Thứ 7)
-
-for (PhongHoc p : allRooms) {
-
-int totalSlotsBooked = thoiKhoaBieuDAO.countBookedSlotsByRoom(p.getMaPhong(), hocKy, namHoc);
-
-double rate = (totalSlotsBooked * 100.0) / MAX_SLOTS_PER_WEEK;
-
-result.add(new PhongSuDungDTO(p, totalSlotsBooked, MAX_SLOTS_PER_WEEK, rate));
-
-}
-
-return result;
-
-}
-
-
-## 3.3. Tầng Truy cập Dữ liệu & Tiện ích (DAO & Util Layer):
-
-- Các lớp thực thể có trong hệ thống: TaiKhoan, PhongHoc, GiangVien, MonHoc, LopHoc, ThoiKhoaBieu.
-- 100% câu truy vấn dùng PreparedStatement và try-with-resources.
-- PasswordUtil băm SHA-256.
-- ExportUtil chèn UTF-8 BOM (\uFEFF) chống lỗi font tiếng Việt trên Microsoft Excel.
-- UIUtil tùy biến FlatButton và định dạng JTable.
-
-## 3.4 Kết quả đạt được
-
-Hệ thống đã được thử nghiệm thực tế thành công trên môi trường NetBeans IDE + XAMPP MySQL, dưới đây là mô tả chi tiết và khung hình ảnh minh họa từng chức năng:
-
-1. Màn hình Đăng nhập hệ thống (LoginForm)
-
-
-**Hình 3.1: Giao diện Đăng nhập hệ thống (LoginForm)**
-
-Mô tả: Tiếp nhận tên đăng nhập và mật khẩu, kiểm tra trạng thái hoạt động của tài khoản trong CSDL và điều hướng người dùng vào giao diện chính tương ứng với quyền hạn.
-
-2. Màn hình Trang chủ Dashboard tổng quan (DashboardPanel)
-
-
-**Hình 3.2: Giao diện Trang chủ tổng quan Dashboard (DashboardPanel)**
-
-Mô tả: Hiển thị 5 thẻ thống kê số lượng phòng học, giảng viên, môn học, lớp học, lịch đã xếp và các nút truy cập nhanh vào các phân hệ chính.
-
-3. Màn hình Lưới Thời Khóa Biểu Tuần trực quan (TimetableGridPanel)
-
-
-**Hình 3.3: Giao diện Lưới Thời Khóa Biểu Tuần trực quan (TimetableGridPanel)**
-
-Mô tả: Trực quan hóa thời khóa biểu theo ma trận 12 tiết học  7 ngày trong tuần. Hỗ trợ lọc xem theo Lớp học, theo Phòng học, theo Giảng viên hoặc Toàn trường; nhấp đúp vào ô để xem chi tiết.
-
-4. Màn hình Quản lý & Xếp Lịch Thời Khóa Biểu (ThoiKhoaBieuPanel)
-
-
-**Hình 3.4: Giao diện Quản lý Danh sách Thời Khóa Biểu (ThoiKhoaBieuPanel)**
-
-Mô tả: Danh sách bảng dữ liệu đầy đủ các lịch học với 2 hàng bộ lọc đa tiêu chí (Kỳ, Năm, Tuần, Thứ, Phòng, GV, Lớp), nút Xuất Excel và các nút Thêm/Sửa/Xóa.
-
-5. Hộp thoại Xếp lịch mới & Cảnh báo phát hiện Xung đột (XepLichDialog)
-
-
-**Hình 3.5: Hộp thoại Xếp lịch & Báo lỗi Xung đột (XepLichDialog)**
-
-Mô tả: Tiếp nhận thông tin ca học mới và tự động gọi XepLichService để phát hiện và cảnh báo tức thời các tình huống trùng phòng, trùng giảng viên hoặc trùng lớp.
-
-6. Màn hình Quản lý Phòng học & Tài nguyên (PhongHocPanel)
-
-Hình 3.6: Giao diện Quản lý Phòng học & Tài nguyên (PhongHocPanel)
-
-Mô tả: Quản lý danh mục phòng học, thiết bị máy chiếu/điều hòa, sức chứa, tòa nhà và trạng thái hoạt động (Đang sử dụng/Bảo trì).
-
-7. Màn hình Quản lý Giảng viên (GiangVienPanel)
-
-
-**Hình 3.7: Giao diện Quản lý Giảng viên (GiangVienPanel)**
-
-Mô tả: Quản lý hồ sơ giảng viên, khoa/bộ môn, email, số điện thoại liên lạc.
-
-8. Màn hình Quản lý Môn học (MonHocPanel)
-
-
-**Hình 3.8: Giao diện Quản lý Môn học (MonHocPanel)**
-
-Mô tả: Quản lý danh mục môn học, số tín chỉ, phân loại môn Lý thuyết hoặc Thực hành.
-
-9. Màn hình Quản lý Lớp học (LopHocPanel)
-
-
-**Hình 3.9: Giao diện Quản lý Lớp học (LopHocPanel)**
-
-Mô tả: Quản lý danh sách lớp sinh viên, sĩ số lớp và niên khóa đào tạo.
-
-10. Màn hình Thống kê Hiệu suất & Tra cứu Phòng trống (ThongKePanel)
-
-
-**Hình 3.10: Giao diện Thống kê Hiệu suất & Tra cứu Phòng trống (ThongKePanel)**
-
-Mô tả: Đo lường tỷ lệ sử dụng từng phòng học (%) và công cụ tìm kiếm phòng học còn trống theo khung giờ cụ thể để xếp lịch nhanh.
-
-11. Màn hình Quản trị Tài khoản & Phân quyền (TaiKhoanPanel)
-
-
-**Hình 3.11: Giao diện Quản trị Tài khoản người dùng (TaiKhoanPanel)**
-
-Mô tả: Phân hệ dành riêng cho ADMIN: thêm tài khoản mới, đổi mật khẩu băm và bật/tắt trạng thái khóa tài khoản người dùng.
-
-
-## 3.5 Kiểm thử
-
-3.5.1. Kịch bản kiểm thử (Test Scenarios & Steps)
-
-Quá trình kiểm thử được tiến hành trên 4 nhóm kịch bản chính:
-
-Kịch bản Xác thực & Phân quyền: Kiểm tra đăng nhập với Admin, Nhân viên, tài khoản bị khóa và mật khẩu sai.
-
-Kịch bản Thuật toán Xung đột Lịch: Kiểm tra các trường hợp biên của khoảng tuần và khoảng tiết (trùng hoàn toàn, liền kề không trùng, giao nhau 1 tiết, lồng trong khoảng cha, khác tuần cùng giờ).
-
-Kịch bản Ràng buộc Nghiệp vụ: Kiểm tra sức chứa phòng vs sĩ số, môn thực hành vs loại phòng, trạng thái phòng bảo trì.
-
-Kịch bản Toàn vẹn Dữ liệu: Kiểm tra xóa phòng học / giảng viên đang có lịch học tham chiếu (khóa ngoại ON DELETE RESTRICT).
-
-3.5.2. Bảng kết quả kiểm thử chi tiết (Test Cases Result)
-
-
-# KẾT LUẬN
-
-
-## Kết quả thu được.
-
-1. Kết quả thu được của đề tài
-
-Qua quá trình nghiên cứu, thiết kế và phát triển đề tài CNJ56: "Xây dựng ứng dụng desktop quản lý thời khóa biểu và tài nguyên phòng học", nhóm sinh viên đã hoàn thành đầy đủ tất cả các mục tiêu đề ra với các kết quả cụ thể:
-
-Xây dựng hoàn chỉnh ứng dụng Desktop Java Swing chuyên nghiệp:
-
-Ứng dụng tuân thủ chuẩn kiến trúc phân tầng (Model – View – Service – DAO).
-
-Tương thích hoàn toàn với môi trường NetBeans IDE, máy chủ XAMPP (MySQL 8.0) và kết nối ổn định qua JDBC (MySQL Connector/J 8.3.0).
-
-Cài đặt thành công thuật toán kiểm tra xung đột thời khóa biểu đa chiều:
-
-Giải quyết triệt để bài toán xếp lịch trong không gian đa chiều (Thời gian  Phòng học  Giảng viên  Lớp học).
-
-Tự động phát hiện và ngăn chặn tức thời 3 loại xung đột nghiêm trọng: Trùng phòng học, Trùng giảng viên, Trùng lớp học trong cùng ca học/khoảng tuần.
-
-Kiểm soát tự động tính tương thích phòng thực hành và cảnh báo sức chứa phòng so với sĩ số lớp.
-
-Thiết kế giao diện hiện đại, trực quan, thân thiện:
-
-Cung cấp giao diện Lưới Thời Khóa Biểu Tuần (Weekly Timetable Grid) 12 tiết  7 ngày, hỗ trợ lọc xem linh hoạt theo Lớp, theo Phòng hoặc theo Giảng viên.
-
-Tùy biến thành phần FlatButton đồ họa vector khử răng cưa, khắc phục triệt để lỗi chìm màu và lỗi ký tự font trên Windows Look & Feel.
-
-Bảo mật và toàn vẹn dữ liệu:
-
-Áp dụng thuật toán băm một chiều SHA-256 bảo vệ mật khẩu người dùng.
-
-100% câu lệnh truy vấn sử dụng PreparedStatement chống tấn công SQL Injection.
-
-Thiết kế CSDL quan hệ đạt chuẩn 3NF, thiết lập các ràng buộc toàn vẹn khóa ngoại ON DELETE RESTRICT ngăn chặn việc xóa nhầm dữ liệu đang có lịch giảng dạy tham chiếu.
-
-Tiện ích thống kê và xuất báo cáo chất lượng cao:
-
-Thống kê chi tiết tỷ lệ sử dụng từng phòng học (%) theo định mức chuẩn 72 tiết/tuần.
-
-Công cụ tra cứu và tìm kiếm phòng học còn trống tức thời theo khung giờ phục vụ xếp lịch bổ sung.
-
-Xuất dữ liệu ra file định dạng CSV/Excel UTF-8 BOM (\uFEFF) hiển thị tiếng Việt có dấu chuẩn 100%.
-
-
-## Hạn chế và hướng phát triển của đề tài.
-
-A. Hạn chế còn tồn tại:
-
-Hệ thống hiện tại hoạt động theo cơ chế hỗ trợ xếp lịch bán tự động (người dùng chọn ca học và hệ thống tự động kiểm tra, cảnh báo, ngăn chặn xung đột); chưa tích hợp thuật toán tự động phân bổ lịch tối ưu toàn trường (Auto-scheduling).
-
-Ứng dụng được triển khai trên nền tảng Desktop cục bộ (Local Network), chưa đồng bộ dữ liệu thời gian thực lên nền tảng đám mây (Cloud) hoặc ứng dụng di động để sinh viên có thể xem lịch cá nhân trực tuyến.
-
-B. Hướng phát triển trong tương lai:
-
-Nghiên cứu và ứng dụng Thuật toán Di truyền (Genetic Algorithm):
-
-Xây dựng module tự động sinh thời khóa biểu tối ưu cho toàn bộ nhà trường dựa trên hàm mục tiêu (Objective Function) tối thiểu hóa số ca trống của giảng viên và tối đa hóa hiệu suất sử dụng phòng học.
-
-Phát triển hệ sinh thái đa nền tảng (Web & Mobile App):
-
-Xây dựng hệ thống Backend API (Spring Boot RESTful API) sử dụng chung cơ sở dữ liệu MySQL hiện tại.
-
-Phát triển ứng dụng di động (Flutter / React Native) phục vụ giảng viên và sinh viên tra cứu thời khóa biểu cá nhân, nhận thông báo đổi phòng học, báo nghỉ qua Push Notification.
-
-Mở rộng Quản lý Thiết bị & Tài nguyên chuyên sâu:
-
-Tích hợp công nghệ mã vạch / mã phản hồi nhanh (QR Code / Barcode) gắn trên từng thiết bị phòng học (máy chiếu, điều hòa, dàn máy tính) để quản lý lịch bảo trì, bảo dưỡng định kỳ và báo cáo sự cố kỹ thuật trực tiếp từ giảng đường.
-
-
-# DANH MỤC TÀI LIỆU THAM KHẢO
-
-I. Tài liệu trực tuyến & Trang web tham khảo
-
-[1] Oracle Corporation, "Java™ Platform, Standard Edition 8 & 17 API Specification", Oracle Documentation, https://docs.oracle.com/en/java/javase/, [tham khảo ngày 28 tháng 08 năm 2026].
-
-[2] Oracle Corporation, "MySQL 8.0 Reference Manual & Connector/J Developer Guide", MySQL Documentation, https://dev.mysql.com/doc/, [tham khảo ngày 28 tháng 08 năm 2026].
-
-[3] Apache Software Foundation, "NetBeans IDE Documentation & GUI Builder (Matisse) Guide", Apache NetBeans, https://netbeans.apache.org/, [tham khảo ngày 28 tháng 08 năm 2026].
-
-[4] Unicode Consortium, "The Unicode Standard — UTF-8 Byte Order Mark (BOM) Encoding Specification", https://www.unicode.org/faq/utf_bom.html, [tham khảo ngày 28 tháng 08 năm 2026].
-
-II. Sách giáo trình & Tài liệu học thuật
-
-[5] Đoàn Văn Ban, Giáo trình Lập trình Hướng đối tượng với Java, Năm 2019, Nhà xuất bản Giáo dục Việt Nam.
-
-[6] Đỗ Trung Tuấn, Giáo trình Cơ sở Dữ liệu, Năm 2018, Nhà xuất bản Đại học Quốc gia Hà Nội.
-
-[7] Abraham Silberschatz, Henry F. Korth, S. Sudarshan, Database System Concepts (7th Edition), Năm 2020, Nhà xuất bản McGraw-Hill Education.
-
-[8] Herbert Schildt, Java: The Complete Reference (12th Edition), Năm 2021, Nhà xuất bản Oracle Press / McGraw-Hill.
-
-[9] Robert C. Martin, Clean Architecture: A Craftsman's Guide to Software Structure and Design, Năm 2018, Nhà xuất bản Prentice Hall.
-
-[10] Edmund Burke, Dave Corne, Automated Timetabling: Practice and Theory (Lecture Notes in Computer Science), Năm 2017, Nhà xuất bản Springer-Verlag.
-
+TR??NG ??I H?C C?NG NGH? ??NG ?  
+KHOA C?NG NGH? TH?NG TIN  
+**B?I T?P L?N H?C PH?N C?NG NGH? JAVA**  
+**CH? ?? 6: QU?N L? ??O T?O**  
+**?? T?I CNJ56: X?Y D?NG ?NG D?NG DESKTOP QU?N L? TH?I KH?A BI?U V? T?I NGUY?N PH?NG H?C S? D?NG JAVA SWING, JDBC V? MYSQL**  
+
+B?c Ninh ? 2026  
+
+---
+
+# DANH M?C H?NH ?NH
+
+- **H?nh 2.1:** Bi?u ?? ph?n c?p ch?c n?ng h? th?ng (BFD) [Thi?t k? tr?n Draw.io]
+- **H?nh 2.2:** S? ?? ki?n tr?c h? th?ng ph?n t?ng t?ch h?p Nh?t k? h? th?ng (Audit Log) [Thi?t k? tr?n Draw.io]
+- **H?nh 2.3:** M? h?nh li?n k?t th?c th? (ERD)
+- **H?nh 2.4:** M? h?nh v?t l? c? s? d? li?u (Physical Data Model)
+- **H?nh 3.1:** Giao di?n ??ng nh?p h? th?ng & Quick Login 6 vai tr? (LoginForm)
+- **H?nh 3.2:** Giao di?n Trang ch? t?ng quan Dashboard 6 th? KPI (DashboardPanel)
+- **H?nh 3.3:** Giao di?n L??i Th?i Kh?a Bi?u Ma tr?n ?a chi?u (TimetableGridPanel - Matrix View)
+- **H?nh 3.4:** Giao di?n L??i Th?i Kh?a Bi?u d?ng Kh?i tr?c quan (TimetableGridPanel - Block View)
+- **H?nh 3.5:** Giao di?n Th?i Kh?a Bi?u Gi?ng d?y c? nh?n c?a Gi?ng vi?n
+- **H?nh 3.6:** Giao di?n Qu?n l? Danh s?ch Th?i Kh?a Bi?u & Ph?n trang (ThoiKhoaBieuPanel)
+- **H?nh 3.7:** H?p tho?i X?p l?ch m?i & C?nh b?o ph?t hi?n Xung ??t (XepLichDialog)
+- **H?nh 3.8:** Giao di?n Gi?ng vi?n ?? xu?t ??i l?ch d?y v? Theo d?i ??n (DeXuatDoiLichPanel)
+- **H?nh 3.9:** Giao di?n Ph? duy?t ??i l?ch 2 c?p ?? (DoiLichPanel)
+- **H?nh 3.10:** Giao di?n Qu?n l? Ph?ng h?c & T?i nguy?n (PhongHocPanel)
+- **H?nh 3.11:** Giao di?n Qu?n l? Gi?ng vi?n (GiangVienPanel)
+- **H?nh 3.12:** Giao di?n Qu?n l? M?n h?c chu?n khung CT?T (MonHocPanel)
+- **H?nh 3.13:** Giao di?n Qu?n l? L?p h?c sinh vi?n (LopHocPanel)
+- **H?nh 3.14:** Giao di?n Qu?n l? Sinh vi?n t?ch h?p Thanh Ph?n trang (SinhVienPanel)
+- **H?nh 3.15:** Giao di?n Qu?n l? Khung Ch??ng tr?nh ??o t?o 130 t?n ch? 4 n?m (CurriculumPanel)
+- **H?nh 3.16:** Giao di?n Nh?t k? Ki?m to?n Ho?t ??ng & B?o m?t H? th?ng (AuditLogPanel)
+- **H?nh 3.17:** Giao di?n Th?ng k? Gi? d?y & T?i ??o t?o Gi?ng vi?n (ThongKePanel - Gi?ng vi?n)
+- **H?nh 3.18:** Giao di?n Th?ng k? Ph?n b? Sinh vi?n theo Ni?n kh?a & L?p h?c (ThongKePanel - Sinh vi?n)
+- **H?nh 3.19:** Giao di?n Qu?n tr? T?i kho?n ng??i d?ng & Ph?n quy?n 6 vai tr? RBAC (TaiKhoanPanel)
+
+---
+
+# DANH M?C B?NG BI?U
+
+- **B?ng 1.1:** Danh s?ch sinh vi?n th?c hi?n ?? t?i (Nh?m 11)
+- **B?ng 1.2:** Ma tr?n ti?n ?? ph?i h?p tri?n khai 10 tu?n
+- **B?ng 1.3:** B?ng ph?n c?ng nhi?m v? th?c hi?n ?? t?i (Nguy?n M?nh Quy?t 50% - H? Th?i B?o 50%)
+- **B?ng 2.1:** B?ng ma tr?n ph?n quy?n 6 vai tr? ng??i d?ng (RBAC Matrix)
+- **B?ng 2.2:** M? t? chi ti?t c?c m?n h?nh ch?nh trong h? th?ng
+- **B?ng 2.3:** B?ng c?u tr?c c?c b?ng d? li?u trong C? s? d? li?u MySQL (quanly_tkb_cnj56)
+- **B?ng 2.4:** B?ng m? t? chi ti?t vai tr? t?ng file m? ngu?n trong d? ?n
+- **B?ng 3.1:** B?ng k?ch b?n v? k?t qu? ki?m th? h? th?ng (Test Cases Result)
+
+---
+
+# L?I M? ??U
+
+Trong b?i c?nh hi?n ??i h?a v? chuy?n ??i s? gi?o d?c hi?n nay, c?ng t?c qu?n l? ??o t?o v? s?p x?p th?i kh?a bi?u t?i c?c tr??ng ??i h?c ??ng vai tr? then ch?t quy?t ??nh hi?u qu? v?n h?nh c?a to?n b? nh? tr??ng. Vi?c x?p l?ch th? c?ng tr?n gi?y t? ho?c qua b?ng t?nh Excel r?i r?c th??ng b?c l? r?t nhi?u h?n ch?: d? x?y ra xung ??t l?ch d?y c?a gi?ng vi?n, tr?ng ph?ng h?c, ph?n b? ph?ng kh?ng t??ng th?ch v?i s? s? l?p ho?c ??c th? m?n h?c (l? thuy?t/th?c h?nh), g?y l?ng ph? t?i nguy?n c? s? v?t ch?t v? m?t nhi?u th?i gian r? so?t, ?i?u ch?nh.
+
+Xu?t ph?t t? nhu c?u th?c ti?n ??, nh?m sinh vi?n ?? l?a ch?n v? th?c hi?n ?? t?i m? s? **CNJ56: "X?y d?ng ?ng d?ng desktop qu?n l? th?i kh?a bi?u v? t?i nguy?n ph?ng h?c"**. ?ng d?ng ???c x?y d?ng tr?n n?n t?ng **Java Swing (NetBeans IDE)**, k?t n?i c? s? d? li?u quan h? **MySQL** th?ng qua JDBC, t?ch h?p thu?t to?n ki?m tra xung ??t th?i kh?a bi?u ?a chi?u th?i gian th?c, giao di?n tr?c quan h?a d?ng l??i tu?n ma tr?n & kh?i, quy tr?nh ??i l?ch 2 c?p ??, qu?n l? khung ch??ng tr?nh ??o t?o 130 t?n ch? 4 n?m v? h? th?ng nh?t k? ki?m to?n b?o m?t (Audit Log).
+
+B?o c?o n?y tr?nh b?y to?n di?n qu? tr?nh nghi?n c?u, ph?n t?ch nghi?p v?, thi?t k? ki?n tr?c h? th?ng, thi?t k? c? s? d? li?u chu?n 3NF, c?i ??t m? ngu?n v? quy tr?nh ki?m th? nghi?m ng?t c?a ?? t?i.
+
+---
+
+# CH??NG 1. C? S? L? THUY?T
+
+## 1.1. Gi?i thi?u v? ?? t?i
+
+### 1.1.1. Gi?i thi?u t?ng quan
+?ng d?ng desktop Qu?n l? th?i kh?a bi?u v? t?i nguy?n ph?ng h?c (CNJ56) l? gi?i ph?p to?n di?n h? tr? Ban Gi?m Hi?u, ph?ng ??o t?o, Tr??ng Khoa, Gi?ng vi?n v? Sinh vi?n:
+- **Qu?n l? t?i nguy?n c? s? v?t ch?t:** Danh m?c ph?ng h?c, lo?i ph?ng (L? thuy?t, Th?c h?nh m?y t?nh, H?i tr??ng), t?a nh?, s?c ch?a, trang thi?t b? v? tr?ng th?i ho?t ??ng (?ang s? d?ng / B?o tr?).
+- **Qu?n l? danh m?c ??o t?o ??i h?c:** 500+ Gi?ng vi?n, 50+ L?p sinh vi?n, 42 M?n h?c chu?n khung CT?T 130 t?n ch?, 2.000 Sinh vi?n 4 kh?a (K21 - K25).
+- **L?p l?ch gi?ng d?y & Thu?t to?n ki?m tra xung ??t 6 chi?u th?i gian th?c:** Ng?n ch?n tuy?t ??i tr?ng ph?ng, tr?ng gi?ng vi?n, tr?ng l?ch l?p, sai lo?i ph?ng th?c h?nh, ph?ng ?ang b?o tr? v? c?nh b?o v??t s?c ch?a.
+- **Tr?c quan h?a Th?i kh?a bi?u ?a chi?u:** L??i TKB Ma tr?n 12 ti?t x 7 ng?y, L??i TKB d?ng Kh?i (Block View), TKB gi?ng d?y c? nh?n c?a gi?ng vi?n, TKB theo l?p sinh vi?n.
+- **Quy tr?nh ??i l?ch h?c 2 c?p ??:** Gi?ng vi?n g?i ?? xu?t -> Tr??ng Khoa duy?t chuy?n m?n c?p 1 -> Ph?ng ??o t?o duy?t ch?t c?p 2 v? t? ??ng ho?n ??i l?ch.
+- **Nh?t k? Ki?m to?n An ninh (Audit Log):** Gi?m s?t 100% thao t?c nh?y c?m k?m IP, MAC, th?i gian, ng??i th?c hi?n v? d? li?u c? -> m?i ch?ng ch?i b?.
+- **B?o c?o & Th?ng k? KPI:** Dashboard 6 th? KPI, th?ng k? gi? d?y c?a gi?ng vi?n, th?ng k? ph?n b? sinh vi?n theo ni?n kh?a/l?p h?c, xu?t b?o c?o CSV/Excel UTF-8 BOM.
+
+### 1.1.2. Th?nh vi?n nh?m & Ph?n c?ng c?ng vi?c (Nh?m 2 th?nh vi?n)
+
+**B?ng 1.1: Danh s?ch sinh vi?n th?c hi?n ?? t?i (Nh?m 11)**
+
+| TT | M? sinh vi?n | Sinh vi?n th?c hi?n | L?p h?nh ch?nh | Vai tr? ??m nhi?m | T? l? ??ng g?p |
+|:---:|:---:|:---|:---:|:---|:---:|
+| 1 | 20231053 | **Nguy?n M?nh Quy?t** | DCCNTT.14.3 | Tr??ng nh?m & Backend Developer / KTS H? th?ng | 50% |
+| 2 | 20231045 | **H? Th?i B?o** | DCCNTT.14.3 | Th?nh vi?n & Frontend Developer / QA Tester | 50% |
+
+**B?ng 1.2: Ma tr?n ti?n ?? ph?i h?p tri?n khai 10 tu?n**
+
+| Giai ?o?n | N?i dung c?ng vi?c | Th?i gian | S?n ph?m ??u ra | Ph? tr?ch ch?nh |
+|:---|:---|:---:|:---|:---:|
+| **Giai ?o?n 1** | Kh?o s?t b?i to?n, thu th?p y?u c?u nghi?p v?, ph?n r? ch?c n?ng BFD | Tu?n 1 - 2 | ??c t? y?u c?u SRS, s? ?? Draw.io BFD | C? 2 th?nh vi?n |
+| **Giai ?o?n 2** | Thi?t k? CSDL 3NF, ERD, ki?n tr?c ph?n t?ng Draw.io | Tu?n 3 - 4 | database.sql (11 b?ng), s? ?? ki?n tr?c | Nguy?n M?nh Quy?t |
+| **Giai ?o?n 3** | X?y d?ng t?ng Model, DBConnection Pool, c?c l?p DAO, Util | Tu?n 5 - 6 | Source code model, dao, connection, util | Nguy?n M?nh Quy?t |
+| **Giai ?o?n 4** | X?y d?ng Service (xung ??t 6 chi?u, workflow ??i l?ch) & Giao di?n Flat UI | Tu?n 7 - 8 | Source code service, view (Panels, Dialogs) | C? 2 th?nh vi?n |
+| **Giai ?o?n 5** | T?ch h?p Audit Log, ph?n trang PaginationBar, CT?T 130 t?n ch? | Tu?n 9 | Source code ho?n ch?nh, Dashboard 6 cards | H? Th?i B?o |
+| **Giai ?o?n 6** | Ki?m th? Unit Test 15 Test Cases, ho?n thi?n b?o c?o v? README | Tu?n 10 | B?o c?o ?? ?n docx/md, GitHub repository | C? 2 th?nh vi?n |
+
+**B?ng 1.3: B?ng ph?n c?ng nhi?m v? th?c hi?n ?? t?i chi ti?t**
+
+| STT | H? v? t?n | Vai tr? | Nhi?m v? ch?nh chi ti?t | T? l? |
+|:---:|:---|:---:|:---|:---:|
+| **1** | **Nguy?n M?nh Quy?t** *(Tr??ng nh?m)* | Tr??ng nh?m & Backend Developer | ? Ph?n r? ch?c n?ng BFD, thi?t k? CSDL chu?n 3NF (11 b?ng), vi?t k?ch b?n `database.sql`.<br>? Thi?t k? s? ?? ki?n tr?c ph?n t?ng tr?n Draw.io (`kientruc_hethong_phantang.drawio`).<br>? X?y d?ng t?ng k?t n?i `DBConnection` Singleton v? to?n b? c?c l?p DAO (`ThoiKhoaBieuDAO`, `PhongHocDAO`, `GiangVienDAO`, `SinhVienDAO`, `ChuongTrinhDaoTaoDAO`, `YeuCauDoiLichDAO`, `AuditLogDAO`).<br>? C?i ??t thu?t to?n ki?m tra xung ??t TKB ?a chi?u 6 r?ng bu?c (`XepLichService`).<br>? X?y d?ng c? ch? x?c th?c SHA-256 v? ma tr?n ph?n quy?n 6 vai tr? RBAC (`AuthService`).<br>? X?y d?ng b? ?i?u khi?n WebServer API v? k?ch b?n Unit Test (`TestLogicRunner.java`). | **50%** |
+| **2** | **H? Th?i B?o** *(Th?nh vi?n)* | Th?nh vi?n & Frontend / QA | ? Thi?t k? giao di?n Java Swing Flat UI chu?n hi?n ??i (`MainForm`, `LoginForm` Quick Login).<br>? X?y d?ng L??i Th?i kh?a bi?u ?a chi?u (`TimetableGridPanel`: Matrix View & Block View, Zoom/Scroll).<br>? X?y d?ng c?c Panel danh m?c: `SinhVienPanel`, `CurriculumPanel` (130 t?n ch?), `DeXuatDoiLichPanel`, `DoiLichPanel`, `AuditLogPanel`, `ThongKePanel`.<br>? X?y d?ng component thanh ph?n trang `PaginationBar` d?ng chung cho to?n h? th?ng.<br>? C?i ??t `WorkflowService` (quy tr?nh duy?t 2 c?p), `ThongKeService` v? `ExportUtil` (Excel UTF-8 BOM).<br>? Th?c hi?n ki?m th? bi?n, ki?m th? giao di?n v? ho?n thi?n t?i li?u thuy?t minh ?? ?n. | **50%** |
+
+---
+
+## 1.2. Gi?i thu?t & C?ng ngh? s? d?ng
+
+### 1.2.1. Thu?t to?n ki?m tra xung ??t th?i kh?a bi?u ?a chi?u
+Thu?t to?n ???c tri?n khai trong `XepLichService`, gi?i quy?t b?i to?n giao thoa ?a chi?u gi?a c?c ??i l??ng:
+- **Th?i gian:** H?c k?, N?m h?c, Tu?n h?c $[T_{start}, T_{end}]$, Th? trong tu?n, Ti?t h?c $[S_{start}, S_{end}]$.
+- **Kh?ng gian t?i nguy?n:** Ph?ng h?c, Lo?i ph?ng, S?c ch?a ch? ng?i.
+- **Con ng??i:** Gi?ng vi?n gi?ng d?y, L?p sinh vi?n tham gia.
+
+?i?u ki?n giao nhau v? kho?ng th?i gian gi?a hai l?ch $A$ v? $B$:
+$$\begin{cases}
+A.\text{hoc\_ky} = B.\text{hoc\_ky} \land A.\text{nam\_hoc} = B.\text{nam\_hoc} \\
+A.\text{thu\_trong\_tuan} = B.\text{thu\_trong\_tuan} \\
+A.\text{tuan\_bat\_dau} \le B.\text{tuan\_ket\_thuc} \land A.\text{tuan\_ket\_thuc} \ge B.\text{tuan\_bat\_dau} \\
+A.\text{tiet\_bat\_dau} \le B.\text{tiet\_ket\_thuc} \land A.\text{tiet\_ket\_thuc} \ge B.\text{tiet\_bat\_dau}
+\end{cases}$$
+
+C?c ?i?u ki?n ki?m tra vi ph?m theo th? t? ?u ti?n:
+1. **Tr?ng ph?ng h?c:** Hai l?p c?ng h?c m?t ph?ng v?o c?ng th?i ?i?m -> B?o l?i xung ??t ph?ng.
+2. **Tr?ng gi?ng vi?n:** Gi?ng vi?n ?ang d?y l?p kh?c v?o c?ng khung gi? -> B?o l?i xung ??t gi?ng vi?n.
+3. **Tr?ng l?p h?c:** L?p sinh vi?n ?ang c? l?ch h?c m?n kh?c -> B?o l?i xung ??t l?p.
+4. **Tr?ng th?i ph?ng kh?ng s?n s?ng:** Ph?ng ?ang trong tr?ng th?i `BAO_TRI` ho?c `NGUNG_SU_DUNG` -> T? ch?i x?p l?ch.
+5. **Kh?ng t??ng th?ch lo?i ph?ng:** M?n h?c th?c h?nh (`THUC_HANH`) nh?ng x?p v?o ph?ng l? thuy?t th??ng -> T? ch?i x?p l?ch ?? ??m b?o trang thi?t b? m?y t?nh.
+6. **V??t qu? s?c ch?a ph?ng:** S? s? l?p > S?c ch?a t?i ?a c?a ph?ng -> ??a ra c?nh b?o tr?c ti?p cho ng??i x?p l?ch.
+
+---
+
+# CH??NG 2. THI?T K? V? X?Y D?NG H? TH?NG
+
+## 2.1. Ph?n t?ch y?u c?u b?i to?n
+
+### 2.1.1. T?c nh?n h? th?ng & Ma tr?n Ph?n quy?n RBAC (6 Vai tr?)
+H? th?ng Qu?n l? Th?i kh?a bi?u v? T?i nguy?n Ph?ng h?c (CNJ56) ???c thi?t k? ph?c v? 6 nh?m t?c nh?n ch?nh:
+1. **Qu?n tr? vi?n (`ADMIN`):** Qu?n l? to?n di?n t?i kho?n ng??i d?ng, c?p ph?t v? thay ??i vai tr?, ??t l?i m?t kh?u, gi?m s?t to?n b? Nh?t k? ki?m to?n an ninh (`AuditLog`).
+2. **Ban Gi?m Hi?u (`BAN_GIAM_HIEU`):** Gi?m s?t Dashboard t?ng quan to?n tr??ng, xem ti?n ?? ??o t?o, xem TKB t?t c? c?c khoa/l?p, ph? duy?t c?p 2 c?c ??n xin ??i l?ch d?y c?a gi?ng vi?n.
+3. **C?n b? Ph?ng ??o T?o (`PHONG_DAO_TAO`):** L?p l?ch th?i kh?a bi?u, ?i?u ph?i ph?ng h?c v? thi?t b?, x? l? xung ??t l?ch h?c, ph? duy?t ??i l?ch c?p 2 v? xu?t b?o c?o.
+4. **Tr??ng Khoa / B? M?n (`TRUONG_KHOA`):** Qu?n l? h? s? gi?ng vi?n, danh m?c m?n h?c thu?c khoa, th?m ??nh v? ph? duy?t s? b? (c?p 1) c?c ??n ?? xu?t ??i l?ch d?y c?a gi?ng vi?n trong khoa.
+5. **Gi?ng Vi?n (`GIANG_VIEN`):** Tra c?u th?i kh?a bi?u gi?ng d?y c? nh?n trong t?ng tu?n/h?c k?, t?o phi?u ?? xu?t xin ??i ca d?y khi c? vi?c ??t xu?t v? theo d?i ti?n ?? duy?t.
+6. **Sinh Vi?n (`SINH_VIEN`):** Tra c?u th?i kh?a bi?u l?p h?c theo tu?n, xem khung ch??ng tr?nh ??o t?o chu?n 130 t?n ch? 4 n?m v? ti?n ?? h?c t?p c? nh?n.
+
+**B?ng 2.1: Ma tr?n ph?n quy?n 6 vai tr? ng??i d?ng (RBAC Matrix)**
+
+| Ph?n h? / Ch?c n?ng | ADMIN | BAN_GIAM_HIEU | PHONG_DAO_TAO | TRUONG_KHOA | GIANG_VIEN | SINH_VIEN |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Dashboard KPI & Th?ng k? t?ng quan** | Full | Full | Full | View | View | View |
+| **L??i TKB Tu?n (Matrix & Block)** | View | View | Full | View | View (C? nh?n) | View (L?p) |
+| **X?p l?ch TKB (Th?m / S?a / X?a)** | Kh?a | View | **Full** | View | Kh?a | Kh?a |
+| **?? xu?t ??i l?ch d?y** | Kh?a | Kh?a | Kh?a | Kh?a | **T?o ??n** | Kh?a |
+| **Ph? duy?t ??i l?ch d?y** | Kh?a | **Duy?t C?p 2** | **Duy?t C?p 2** | **Duy?t C?p 1** | Kh?a | Kh?a |
+| **Qu?n l? Ph?ng h?c & Thi?t b?** | Full | View | Full | View | View | View |
+| **Qu?n l? Gi?ng vi?n & M?n h?c** | Full | View | Full | Full | View | View |
+| **Khung CT?T 130 T?n Ch?** | Full | View | Full | Full | View | View |
+| **Qu?n l? Sinh vi?n & Ph?n trang** | Full | View | Full | Full | View | View (C? nh?n) |
+| **Nh?t k? Ki?m to?n (Audit Log)** | **Full** | View | Kh?a | Kh?a | Kh?a | Kh?a |
+| **Qu?n tr? T?i kho?n & Ph?n quy?n** | **Full** | Kh?a | Kh?a | Kh?a | Kh?a | Kh?a |
+
+---
+
+### 2.1.2. Bi?u ?? ph?n c?p ch?c n?ng h? th?ng (BFD)
+Bi?u ?? ph?n c?p ch?c n?ng (Business Function Diagram - BFD) ???c thi?t k? chi ti?t b?ng c?ng c? **Draw.io** (`docs/architecture/bieudo_phancap_chucnang.drawio`) nh?m m? h?nh h?a to?n di?n c?y ph?n c?p nghi?p v? c?a ?? t?i CNJ56. H? th?ng ???c ph?t tri?n t? n?t g?c trung t?m 'H? TH?NG QU?N L? TH?I KH?A BI?U V? T?I NGUY?N PH?NG H?C' v? ph?n r? ??i x?ng th?nh 7 ph?n h? ch?nh v?i 38 ch?c n?ng chi ti?t:
+1. **Tr?c ph?n nh?nh h??ng l?n (3 ph?n h? nghi?p v? & qu?n tr?):**
+   - **B?o c?o v? th?ng k?:** Th?ng k? t?i gi?ng d?y (ti?t/tu?n), t? l? l?p ??y ph?ng, qu?t ph?ng tr?ng th?i gian th?c, xu?t file CSV/Excel UTF-8 BOM.
+   - **X?p l?ch v? th?i kh?a bi?u:** L?p l?ch m?i, l?c TKB ?a chi?u, tr?c quan h?a L??i TKB tu?n c? Zoom chu?t, ph?n b? ph?ng theo lo?i (LT/TH), ki?m tra xung ??t 6 chi?u theo th?i gian th?c, ng?n ch?n tr?ng ph?ng/GV/l?p, ch?nh s?a v? h?y ca h?c.
+   - **Ti?n ?ch h? t?ng & Ki?m to?n:** K?t n?i DBConnection Pool, n?p seed data m?u, m? h?a SHA-256, ghi v?t ki?m to?n Audit Log t? ??ng, c? ch? ch?ng ch?i b? tr?ch nhi?m v? ki?m ??nh d? li?u ??u v?o.
+2. **Tr?c ph?n nh?nh h??ng xu?ng (4 ph?n h? qu?n tr? danh m?c & ph? duy?t):**
+   - **Qu?n l? t?i kho?n ng??i d?ng:** ??ng nh?p/x?c th?c, t?o t?i kho?n, s?a th?ng tin, kh?a/x?a t?i kho?n, ph?n quy?n RBAC 6 vai tr?.
+   - **Qu?n l? ph?ng h?c & thi?t b?:** Th?m ph?ng m?i, s?a s?c ch?a, x?a ph?ng, thi?t l?p tr?ng th?i b?o tr?, ph?n lo?i ph?ng LT / Th?c h?nh PM.
+   - **Qu?n l? danh m?c ??o t?o:** Qu?n l? 500 gi?ng vi?n, 42 m?n h?c (130 t?n ch? chu?n), 50 l?p h?c v? 2.000 sinh vi?n, khung CT?T 4 n?m.
+   - **?? xu?t v? duy?t ??i l?ch:** Gi?ng vi?n g?i ??n ??i ca, ki?m tra xung ??t ca m?i, Khoa duy?t s? b?, Ph?ng ??o t?o duy?t ch?t, t? ??ng ho?n ??i TKB.
+
+![H?nh 2.1: Bi?u ?? ph?n c?p ch?c n?ng h? th?ng (BFD)](docs/images/hinh_2_1_bieudo_phancap_chucnang.png)
+*H?nh 2.1: Bi?u ?? ph?n c?p ch?c n?ng h? th?ng (BFD) [Thi?t k? tr?n Draw.io]*
+
+---
+
+## 2.2. Ki?n tr?c h? th?ng ph?n t?ng (Layered Architecture)
+H? th?ng ???c thi?t k? theo m? h?nh **Ki?n tr?c Ph?n t?ng (Layered Architecture)** chu?n c?ng nghi?p k?t h?p t?ng ?i?u h??ng (Controller Layer) v? Tr?c An ninh - B? tr? (Cross-Cutting Concerns) ch?y d?c to?n b? h? th?ng. (S? ?? ???c thi?t k? chi ti?t b?ng c?ng c? Draw.io t?i `docs/architecture/kientruc_hethong_phantang.drawio`).
+
+![H?nh 2.2: S? ?? ki?n tr?c h? th?ng ph?n t?ng](docs/images/hinh_2_2_kientruc_hethong_moi.png)
+*H?nh 2.2: S? ?? ki?n tr?c h? th?ng ph?n t?ng t?ch h?p Nh?t k? h? th?ng (Audit Log) [Thi?t k? tr?n Draw.io]*
+
+### 2.2.1. Ph?n t?ch chi ti?t c?c t?ng ki?n tr?c:
+1. **T?ng Tr?nh di?n (Presentation Layer - Java Swing & Flat UI):** Ch?u tr?ch nhi?m t??ng t?c ng??i d?ng: `LoginForm`, `MainForm` (?i?u ph?i qua CardLayout), `TimetableGridPanel` (ma tr?n 12 ti?t x 7 ng?y, Zoom in/out, Block View), `ThoiKhoaBieuPanel`, `DeXuatDoiLichPanel`, `DoiLichPanel`, `CurriculumPanel`, `SinhVienPanel`, `AuditLogPanel`, `ThongKePanel`, `TaiKhoanPanel`, `PaginationBar`.
+2. **T?ng ?i?u h??ng & Ti?p nh?n (Controller Layer):** C?u n?i trung gian ti?p nh?n s? ki?n t? View, tr?ch xu?t form, ki?m tra h?p l? s? b? v? ?y quy?n x? l? cho Service: `AuthController`, `TimetableController`, `CurriculumController`, `RescheduleController`, `AuditController`, `UserController`, `WebServer` (REST API).
+3. **T?ng Nghi?p v? (Service Layer):** H?t nh?n x? l? logic v? thu?t to?n:
+   - `AuthService`: X?c th?c ??ng nh?p b?m SHA-256 v? ph?n quy?n RBAC 6 vai tr?.
+   - `XepLichService`: Engine ki?m tra xung ??t l?ch h?c 6 chi?u theo th?i gian th?c.
+   - `WorkflowService`: X? l? quy tr?nh ph? duy?t ??i l?ch 2 c?p nghi?m ng?t (Khoa -> ??o t?o).
+   - `AuditService`: D?ch v? ghi v?t ki?m to?n ch?ng ch?i b? (Non-repudiation).
+   - `ThongKeService`: ?o l??ng hi?u su?t ph?ng, t?i gi?ng d?y c?a GV v? ph?n b? sinh vi?n.
+4. **T?ng Truy c?p D? li?u (DAO Layer - JDBC PreparedStatement):** Th?c thi CRUD qua 100% PreparedStatement: `ThoiKhoaBieuDAO`, `PhongHocDAO`, `GiangVienDAO`, `SinhVienDAO`, `ChuongTrinhDaoTaoDAO`, `YeuCauDoiLichDAO`, `AuditLogDAO`, `TaiKhoanDAO`.
+5. **T?ng Th?c th? (Model Layer):** ?nh x? ??i t??ng POJO: `TaiKhoan`, `PhongHoc`, `GiangVien`, `MonHoc`, `LopHoc`, `SinhVien`, `ChuongTrinhDaoTao`, `ThoiKhoaBieu`, `YeuCauDoiLich`, `LichSuDuyet`, `AuditLog`.
+6. **C? s? d? li?u quan h? (Database Tier - MySQL 8.0 Localhost):** Chu?n 3NF `quanly_tkb_cnj56` ch?y tr?n MySQL (XAMPP c?ng 3306), k?t n?i qua MySQL Connector/J 8.3.0.
+7. **Tr?c B? tr? & An ninh (Cross-Cutting Concerns):** Ch?y d?c xuy?n su?t c?c t?ng: `DBConnection` (Singleton connection pool), `PasswordUtil` (m? h?a SHA-256), `ExportUtil` (xu?t CSV/Excel UTF-8 BOM), `ValidationUtil`, `UIUtil` (FlatButton ?? h?a kh? r?ng c?a).
+
+---
+
+## 2.3. Thi?t k? giao di?n
+
+**B?ng 2.2: M? t? chi ti?t c?c m?n h?nh ch?nh trong h? th?ng**
+
+| STT | T?n m?n h?nh / Panel | File m? ngu?n | Ch?c n?ng nghi?p v? ch?nh |
+|:---:|:---|:---|:---|
+| 1 | **??ng nh?p h? th?ng** | `LoginForm.java` | Ti?p nh?n ??ng nh?p, x?c th?c SHA-256, t?ch h?p 6 n?t Quick Login ch?n nhanh vai tr? ki?m th?. |
+| 2 | **Trang ch? Dashboard** | `DashboardPanel.java` | 6 th? KPI t?ng quan (Ph?ng, GV, SV, M?n, TKB tu?n, Ch? duy?t), bi?u ?? ph?n b? v? th?ng tin h? th?ng. |
+| 3 | **L??i TKB ?a Chi?u** | `TimetableGridPanel.java` | Hi?n th? ma tr?n 12 ti?t x 7 ng?y, chuy?n ??i Matrix View / Block View, xem theo Ph?ng/GV/L?p, Zoom/Scroll. |
+| 4 | **Qu?n l? Danh s?ch TKB** | `ThoiKhoaBieuPanel.java` | B?ng d? li?u TKB to?n tr??ng, b? l?c ?a ti?u ch?, n?t Th?m/S?a/X?a/Xu?t Excel v? ph?n trang. |
+| 5 | **H?p tho?i X?p l?ch** | `XepLichDialog.java` | Form th?m/s?a ca h?c, t? ??ng k?ch ho?t `XepLichService` ki?m tra xung ??t th?i gian th?c 6 chi?u. |
+| 6 | **?? xu?t ??i l?ch d?y** | `DeXuatDoiLichPanel.java` | Gi?ng vi?n ch?n ca c?n ??i, ch?n th?i gian/ph?ng m?i, nh?p l? do v? g?i ??n l?n c?p th?m quy?n. |
+| 7 | **Ph? duy?t ??i l?ch 2 c?p**| `DoiLichPanel.java` | Tr??ng Khoa duy?t c?p 1 -> ??o t?o duy?t c?p 2; t? ??ng c?p nh?t ho?n ??i TKB khi ??n ???c ch?p thu?n. |
+| 8 | **Khung CT?T 130 T?n Ch?** | `CurriculumPanel.java` | Qu?n l? 42 m?n h?c chu?n khung ??i h?c 4 n?m (8 h?c k?) cho c?c kh?a sinh vi?n K21, K22, K23, K24, K25. |
+| 9 | **Qu?n l? Sinh vi?n** | `SinhVienPanel.java` | Qu?n l? 2.000 sinh vi?n, t?ch h?p thanh ph?n trang `PaginationBar` (20 SV/trang), t?m ki?m ?a n?ng. |
+| 10 | **Nh?t k? Ki?m to?n** | `AuditLogPanel.java` | Gi?m s?t to?n b? ho?t ??ng nh?y c?m trong h? th?ng, ghi nh?n IP, MAC, th?i gian, d? li?u c? -> m?i. |
+| 11 | **Th?ng k? & Tra c?u** | `ThongKePanel.java` | Th?ng k? t?i gi?ng d?y c?a GV, ph?n b? SV theo kh?a/l?p, c?ng su?t s? d?ng ph?ng h?c, qu?t ph?ng tr?ng. |
+| 12 | **Qu?n l? T?i kho?n** | `TaiKhoanPanel.java` | D?nh ri?ng cho ADMIN: CRUD t?i kho?n, c?p ph?t 6 vai tr? RBAC, ??i m?t kh?u, b?t/t?t kh?a t?i kho?n. |
+
+---
+
+## 2.4. Thi?t k? c? s? d? li?u
+
+C? s? d? li?u `quanly_tkb_cnj56` ???c chu?n h?a ??t d?ng chu?n **3NF**, bao g?m **11 b?ng d? li?u**:
+1. `tai_khoan`: Qu?n l? ng??i d?ng, m?t kh?u b?m SHA-256 v? vai tr? RBAC (`ADMIN`, `BAN_GIAM_HIEU`, `PHONG_DAO_TAO`, `TRUONG_KHOA`, `GIANG_VIEN`, `SINH_VIEN`).
+2. `phong_hoc`: Qu?n l? 20 ph?ng h?c (L? thuy?t, Th?c h?nh PM, H?i tr??ng), t?a nh?, s?c ch?a, tr?ng th?i b?o tr?.
+3. `giang_vien`: Qu?n l? danh m?c 500+ gi?ng vi?n, khoa b? m?n, email, s? ?i?n tho?i.
+4. `mon_hoc`: Qu?n l? danh m?c 42 m?n h?c chu?n khung CT?T 130 t?n ch? (L? thuy?t / Th?c h?nh).
+5. `lop_hoc`: Qu?n l? danh m?c c?c l?p sinh vi?n ch?nh quy (s? s?, ni?n kh?a ??o t?o).
+6. `thoi_khoa_bieu`: B?ng trung t?m l?u tr? l?ch h?c: li?n k?t m?n, l?p, gi?ng vi?n, ph?ng h?c, h?c k?, n?m h?c, th?, ti?t, tu?n.
+7. `sinh_vien`: Qu?n l? 2.000 sinh vi?n thu?c c?c kh?a K21, K22, K23, K24, K25.
+8. `chuong_trinh_dao_tao`: L?u tr? khung ch??ng tr?nh ??o t?o chu?n 4 n?m (8 h?c k?, 130 t?n ch?) theo t?ng kh?a sinh vi?n.
+9. `yeu_cau_doi_lich`: Qu?n l? ??n ?? xu?t ??i l?ch d?y c?a gi?ng vi?n, c?p ph? duy?t (1 ho?c 2) v? tr?ng th?i duy?t.
+10. `lich_su_phe_duyet`: L?u tr? bi?n b?n l?ch s? ph? duy?t c?a Tr??ng Khoa v? Ph?ng ??o t?o k?m ? ki?n th?m ??nh.
+11. `audit_log`: L?u tr? d?u v?t ki?m to?n an ninh: ??a ch? IP, t?n ??ng nh?p, h?nh ??ng, ??i t??ng, d? li?u c? -> m?i, th?i gian.
+
+---
+
+## 2.5. T? ch?c d? ?n & M? t? file m? ngu?n
+
+```
+BTL/
+??? docs/architecture/                 # S? ?? thi?t k? ki?n tr?c h? th?ng
+?   ??? bieudo_phancap_chucnang.drawio # File m? ngu?n s? ?? BFD tr?n Draw.io
+?   ??? kientruc_hethong_phantang.drawio# File m? ngu?n s? ?? ki?n tr?c tr?n Draw.io
+??? docs/images/                       # ?nh xu?t b?n ch?t l??ng cao
+??? screenshots/                       # ?nh ch?p th?c t? nghi?m thu ch?c n?ng
+??? lib/mysql-connector-j-8.3.0.jar    # Driver JDBC MySQL 8.3.0
+??? src/
+?   ??? connection/DBConnection.java   # Qu?n l? k?t n?i JDBC Singleton Pool
+?   ??? controller/                    # B? ?i?u khi?n trung gian & Web API
+?   ?   ??? AuthController.java
+?   ?   ??? TimetableController.java
+?   ?   ??? CurriculumController.java
+?   ?   ??? RescheduleController.java
+?   ?   ??? AuditController.java
+?   ?   ??? UserController.java
+?   ?   ??? WebServer.java
+?   ??? dao/                           # T?ng thao t?c CSDL JDBC PreparedStatement
+?   ?   ??? TaiKhoanDAO.java
+?   ?   ??? PhongHocDAO.java
+?   ?   ??? GiangVienDAO.java
+?   ?   ??? MonHocDAO.java
+?   ?   ??? LopHocDAO.java
+?   ?   ??? SinhVienDAO.java
+?   ?   ??? ChuongTrinhDaoTaoDAO.java
+?   ?   ??? ThoiKhoaBieuDAO.java
+?   ?   ??? YeuCauDoiLichDAO.java
+?   ?   ??? AuditLogDAO.java
+?   ??? model/                         # Th?c th? POJO ?nh x? b?ng CSDL
+?   ?   ??? TaiKhoan.java, PhongHoc.java, GiangVien.java, MonHoc.java, LopHoc.java
+?   ?   ??? SinhVien.java, ChuongTrinhDaoTao.java, ThoiKhoaBieu.java
+?   ?   ??? YeuCauDoiLich.java, LichSuDuyet.java, AuditLog.java
+?   ??? service/                       # X? l? logic nghi?p v? c?t l?i
+?   ?   ??? AuthService.java (X?c th?c & RBAC)
+?   ?   ??? XepLichService.java (Engine ki?m tra xung ??t th?i gian th?c 6 chi?u)
+?   ?   ??? WorkflowService.java (Quy tr?nh ph? duy?t ??i l?ch 2 c?p ??)
+?   ?   ??? AuditService.java (Ghi v?t ki?m to?n an ninh)
+?   ?   ??? ThongKeService.java (T?nh to?n c?ng su?t ph?ng, t?i GV, th?ng k? SV)
+?   ??? util/                          # Ti?n ?ch b? tr? h? th?ng
+?   ?   ??? PasswordUtil.java (B?m SHA-256)
+?   ?   ??? ValidationUtil.java (Ki?m ??nh d? li?u ??u v?o)
+?   ?   ??? ExportUtil.java (Xu?t CSV/Excel UTF-8 BOM)
+?   ?   ??? UIUtil.java (FlatButton, v? kh? r?ng c?a, bo g?c)
+?   ?   ??? DataSeeder.java (N?p b? d? li?u m?u 42 m?n, 2.000 SV, 500 GV)
+?   ??? view/                          # Giao di?n ng??i d?ng Java Swing
+?       ??? LoginForm.java, MainForm.java
+?       ??? dialog/ (XepLichDialog, DoiLichDialog, TaiKhoanDialog, PhongHocDialog...)
+?       ??? panel/ (DashboardPanel, TimetableGridPanel, ThoiKhoaBieuPanel, DeXuatDoiLichPanel,
+?                   DoiLichPanel, CurriculumPanel, SinhVienPanel, AuditLogPanel,
+?                   ThongKePanel, TaiKhoanPanel, PaginationBar...)
+??? test/TestLogicRunner.java          # B? ki?m th? Unit Test t? ??ng
+??? database.sql                       # K?ch b?n kh?i t?o CSDL & d? li?u m?u
+??? README.md                          # H??ng d?n c?i ??t v? v?n h?nh
+```
+
+---
+
+# CH??NG 3. PH?T TRI?N H? TH?NG V? KI?M TH?
+
+## 3.1. T?ng Tr?nh di?n (Presentation Layer)
+Giao di?n ???c x?y d?ng 100% b?ng Java Swing k?t h?p c?c th? vi?n chu?n JDK, s? d?ng c? ch? b? c?c `CardLayout` t?i `MainForm` ?? chuy?n ??i m??t m? gi?a c?c ph?n h? ch?c n?ng:
+- **Thanh ?i?u h??ng Sidebar t? th?ch ?ng:** T? ??ng ?n c?c m?c menu kh?ng thu?c th?m quy?n c?a t?i kho?n ??ng nh?p theo ??ng ph?n quy?n RBAC.
+- **Thanh ph?n trang PaginationBar:** T?i ?u h?a hi?u n?ng hi?n th? cho c?c b?ng d? li?u l?n (2.000 sinh vi?n, 500 gi?ng vi?n, h?ng tr?m l?ch h?c), ng?n ch?n ho?n to?n hi?n t??ng tr?n b? nh? JVM Heap.
+
+---
+
+## 3.2. T?ng Nghi?p v? (Service Layer)
+- **Engine X?p L?ch & Ng?n Ng?a Xung ??t (`XepLichService`):** Thu?t to?n ??i so?t 6 chi?u ??c l?p ch?y tr??c m?i thao t?c l?u v?o CSDL, ??m b?o t?nh to?n v?n v? h?p l? cho to?n b? th?i kh?a bi?u c?a nh? tr??ng.
+- **Quy tr?nh Ph? duy?t ??i l?ch 2 C?p (`WorkflowService`):** Ki?m so?t lu?ng ??n ch?t ch? t? Gi?ng vi?n -> Khoa -> ??o t?o. Ch? khi ??o t?o duy?t ch?t, h? th?ng m?i t? ??ng ho?n ??i v? c?p nh?t b?n ghi trong b?ng `thoi_khoa_bieu`.
+- **D?ch v? Ki?m to?n B?o m?t (`AuditService`):** Ho?t ??ng song song v? ??c l?p, ghi nh?n d?u v?t m?i thao t?c nh?y c?m v?o b?ng `audit_log` ph?c v? thanh tra v? ch?ng ch?i b? tr?ch nhi?m.
+
+---
+
+## 3.3. T?ng Truy c?p D? li?u & Ti?n ?ch (DAO & Util)
+- ?p d?ng 100% c?u l?nh `PreparedStatement` ch?ng tri?t ?? l? h?ng SQL Injection.
+- S? d?ng m? h?nh k?t n?i Singleton Pool trong `DBConnection` gi?p t?i s? d?ng k?t n?i hi?u qu?, tr?nh c?n ki?t Connection Pool c?a MySQL.
+- Xu?t b?o c?o qua `ExportUtil` t? ??ng ch?n k? t? **Byte Order Mark UTF-8 (`\uFEFF`)** ? ??u t?p, ??m b?o hi?n th? ho?n h?o font Ti?ng Vi?t c? d?u khi m? b?ng Microsoft Excel tr?n m?i phi?n b?n Windows.
+
+---
+
+## 3.4. K?t qu? ??t ???c (B? s?u t?p Giao di?n Th?c t?)
+
+H? th?ng ?? ???c th? nghi?m v? nghi?m thu th?c t? th?nh c?ng tr?n m?i tr??ng **NetBeans IDE + XAMPP MySQL**. D??i ??y l? m? t? chi ti?t v? h?nh ?nh ch?p th?c t? t?ng ch?c n?ng:
+
+### 1. M?n h?nh ??ng nh?p h? th?ng & Quick Login (LoginForm)
+![H?nh 3.1: Giao di?n ??ng nh?p h? th?ng](screenshots/hinh_login_quick_roles.png)
+*H?nh 3.1: Giao di?n ??ng nh?p h? th?ng & Quick Login 6 vai tr? (LoginForm)*  
+**M? t?:** Ti?p nh?n t?n ??ng nh?p v? m?t kh?u, x?c th?c b?ng m? h?a SHA-256. T?ch h?p s?n 6 n?t b?m ch?n nhanh vai tr? (Admin, Ban Gi?m Hi?u, Ph?ng ??o T?o, Tr??ng Khoa, Gi?ng Vi?n, Sinh Vi?n) gi?p h?i ??ng ch?m ?? ?n d? d?ng ki?m th? ph?n quy?n m? kh?ng c?n nh?p l?i m?t kh?u.
+
+---
+
+### 2. M?n h?nh Trang ch? Dashboard 6 th? KPI (DashboardPanel)
+![H?nh 3.2: Giao di?n Trang ch? t?ng quan Dashboard](screenshots/hinh_trangchu_moi.png)
+*H?nh 3.2: Giao di?n Trang ch? t?ng quan Dashboard 6 th? KPI (DashboardPanel)*  
+**M? t?:** Hi?n th? 6 th? th?ng k? KPI t?ng quan: T?ng s? ph?ng h?c, Gi?ng vi?n, Sinh vi?n, M?n h?c, L?ch h?c tu?n hi?n t?i v? S? ??n ??i l?ch ch? x? l?. Kh?i th?ng tin h? th?ng ???c thi?t k? chuy?n nghi?p v? ??t g?n g?ng ? ph?a d??i theo ??ng y?u c?u nghi?p v?.
+
+---
+
+### 3. M?n h?nh L??i Th?i Kh?a Bi?u Ma tr?n ?a chi?u (TimetableGridPanel - Matrix View)
+![H?nh 3.3: Giao di?n L??i Th?i Kh?a Bi?u Ma tr?n](screenshots/hinh_tkb_grid_centered_scroll.png)
+*H?nh 3.3: Giao di?n L??i Th?i Kh?a Bi?u Ma tr?n ?a chi?u (TimetableGridPanel - Matrix View)*  
+**M? t?:** Tr?c quan h?a th?i kh?a bi?u theo ma tr?n 12 ti?t h?c $\times$ 7 ng?y trong tu?n. H? tr? l?c xem theo L?p, theo Ph?ng h?c, theo Gi?ng vi?n; t?ch h?p t?nh n?ng cu?n chu?t m??t m? v? nh?p ??p v?o t?ng ? ?? xem chi ti?t th?ng tin ca h?c.
+
+---
+
+### 4. M?n h?nh L??i Th?i Kh?a Bi?u d?ng Kh?i tr?c quan (Block View)
+![H?nh 3.4: L??i Th?i Kh?a Bi?u d?ng Kh?i](screenshots/hinh_grid_block_schedule.png)
+*H?nh 3.4: Giao di?n L??i Th?i Kh?a Bi?u d?ng Kh?i tr?c quan (TimetableGridPanel - Block View)*  
+**M? t?:** Ch? ?? hi?n th? d?ng Kh?i (Block View) tr?c quan h?a c?c ca h?c theo c?c kh?i th?i gian s?ng v? chi?u, gi?p gi?ng vi?n v? ng??i qu?n l? d? d?ng nh?n bi?t c?c kho?ng tr?ng ph?ng h?c v? th?i gian bi?u trong tu?n.
+
+---
+
+### 5. M?n h?nh Th?i Kh?a Bi?u Gi?ng D?y C? Nh?n c?a Gi?ng Vi?n
+![H?nh 3.5: Th?i Kh?a Bi?u Gi?ng D?y Gi?ng Vi?n](screenshots/hinh_tkb_giangvien.png)
+*H?nh 3.5: Giao di?n Th?i Kh?a Bi?u Gi?ng D?y c? nh?n c?a Gi?ng vi?n*  
+**M? t?:** Ph?n h? chuy?n bi?t d?nh cho gi?ng vi?n tra c?u l?ch gi?ng d?y c? nh?n trong t?ng h?c k? v? tu?n h?c c? th?, hi?n th? ??y ?? t?n m?n h?c, l?p sinh vi?n ph? tr?ch, ph?ng h?c v? th?i gian b?t ??u - k?t th?c.
+
+---
+
+### 6. M?n h?nh Qu?n l? Danh s?ch Th?i Kh?a Bi?u & Ph?n trang (ThoiKhoaBieuPanel)
+![H?nh 3.6: Qu?n l? Danh s?ch Th?i Kh?a Bi?u](screenshots/hinh_tkb_pagination.png)
+*H?nh 3.6: Giao di?n Qu?n l? Danh s?ch Th?i Kh?a Bi?u t?ch h?p Thanh ph?n trang (ThoiKhoaBieuPanel)*  
+**M? t?:** B?ng d? li?u chi ti?t to?n b? c?c l?ch h?c v?i 2 h?ng b? l?c ?a ti?u ch? (H?c k?, N?m h?c, Tu?n, Th?, Ph?ng, Gi?ng vi?n, L?p), n?t Xu?t b?o c?o Excel/CSV UTF-8 v? thanh ?i?u h??ng ph?n trang `PaginationBar`.
+
+---
+
+### 7. H?p tho?i X?p l?ch m?i & C?nh b?o Xung ??t th?i gian th?c (XepLichDialog)
+![H?nh 3.7: H?p tho?i X?p l?ch & B?o l?i Xung ??t](screenshots/hinh_3_5_xeplich_dialog.png)
+*H?nh 3.7: H?p tho?i X?p l?ch & C?nh b?o ph?t hi?n Xung ??t th?i gian th?c (XepLichDialog)*  
+**M? t?:** Ti?p nh?n th?ng tin ca h?c m?i v? t? ??ng k?ch ho?t `XepLichService` ?? ph?t hi?n v? c?nh b?o t?c th?i c?c t?nh hu?ng tr?ng ph?ng, tr?ng gi?ng vi?n, tr?ng l?p h?c ho?c vi ph?m lo?i ph?ng th?c h?nh.
+
+---
+
+### 8. Giao di?n Gi?ng vi?n ?? xu?t ??i l?ch d?y (DeXuatDoiLichPanel)
+![H?nh 3.8: Gi?ng vi?n ?? xu?t ??i l?ch](screenshots/hinh_dexuat_doilich.png)
+*H?nh 3.8: Giao di?n Gi?ng vi?n ?? xu?t ??i l?ch d?y v? Theo d?i tr?ng th?i ??n (DeXuatDoiLichPanel)*  
+**M? t?:** Gi?ng vi?n l?a ch?n ca h?c c?n ??i, ch?n th?i gian v? ph?ng h?c m?i (h? th?ng ki?m tra xung ??t tr?c ti?p), nh?p l? do v? g?i ??n l?n c?p th?m quy?n; ??ng th?i theo d?i ti?n ?? ph? duy?t c?a Khoa v? ??o t?o.
+
+---
+
+### 9. Giao di?n Ph? duy?t ??i l?ch h?c 2 C?p ?? (DoiLichPanel)
+![H?nh 3.9: Ph? duy?t ??i l?ch 2 c?p](screenshots/hinh_dexuat_doilich.png)
+*H?nh 3.9: Giao di?n Ph? duy?t ??i l?ch h?c 2 c?p ?? (DoiLichPanel)*  
+**M? t?:** D?nh cho Tr??ng Khoa (ph? duy?t c?p 1) v? Ph?ng ??o t?o / Ban Gi?m Hi?u (ph? duy?t c?p 2). Khi ??n ???c duy?t ch?t, h? th?ng t? ??ng c?p nh?t ho?n ??i l?ch h?c trong b?ng `thoi_khoa_bieu` v? l?u bi?n b?n v?o `lich_su_phe_duyet`.
+
+---
+
+### 10. M?n h?nh Qu?n l? Ph?ng h?c & T?i nguy?n (PhongHocPanel)
+![H?nh 3.10: Qu?n l? Ph?ng h?c](screenshots/hinh_3_6_phonghoc.png)
+*H?nh 3.10: Giao di?n Qu?n l? Ph?ng h?c & T?i nguy?n (PhongHocPanel)*  
+**M? t?:** Qu?n l? danh m?c ph?ng h?c, lo?i ph?ng (L? thuy?t, Th?c h?nh m?y t?nh, H?i tr??ng), s?c ch?a, trang thi?t b? ?i k?m v? tr?ng th?i ho?t ??ng (?ang s? d?ng / B?o tr?).
+
+---
+
+### 11. M?n h?nh Qu?n l? Gi?ng vi?n (GiangVienPanel)
+![H?nh 3.11: Qu?n l? Gi?ng vi?n](screenshots/hinh_3_7_giangvien.png)
+*H?nh 3.11: Giao di?n Qu?n l? Gi?ng vi?n (GiangVienPanel)*  
+**M? t?:** Qu?n l? h? s? gi?ng vi?n, h?c v?, khoa/b? m?n tr?c thu?c, email v? s? ?i?n tho?i li?n h?.
+
+---
+
+### 12. M?n h?nh Qu?n l? M?n h?c chu?n khung CT?T (MonHocPanel)
+![H?nh 3.12: Qu?n l? M?n h?c](screenshots/hinh_danhmuc_monhoc.png)
+*H?nh 3.12: Giao di?n Qu?n l? M?n h?c chu?n khung CT?T (MonHocPanel)*  
+**M? t?:** Qu?n l? danh m?c 42 m?n h?c trong ch??ng tr?nh ??o t?o, ph?n lo?i m?n L? thuy?t ho?c Th?c h?nh v? s? t?n ch? t??ng ?ng.
+
+---
+
+### 13. M?n h?nh Qu?n l? L?p h?c sinh vi?n (LopHocPanel)
+![H?nh 3.13: Qu?n l? L?p h?c](screenshots/hinh_lophoc_vietnamese_centered.png)
+*H?nh 3.13: Giao di?n Qu?n l? L?p h?c sinh vi?n (LopHocPanel)*  
+**M? t?:** Qu?n l? danh s?ch c?c l?p sinh vi?n ch?nh quy, s? s? l?p v? ni?n kh?a ??o t?o.
+
+---
+
+### 14. M?n h?nh Qu?n l? Sinh vi?n & Thanh Ph?n trang chu?n h?a (SinhVienPanel)
+![H?nh 3.14: Qu?n l? Sinh vi?n & Ph?n trang](screenshots/hinh_sinhvien_pagination.png)
+*H?nh 3.14: Giao di?n Qu?n l? Sinh vi?n t?ch h?p Thanh Ph?n trang chu?n h?a (SinhVienPanel)*  
+**M? t?:** Qu?n l? danh m?c 2.000 sinh vi?n k?m ph?n trang 20 sinh vi?n/trang. H? tr? c?c n?t ?i?u h??ng: ??u, Tr??c, danh s?ch s? trang, Sau, Cu?i c?ng ch? b?o r? n?t Trang hi?n t?i / T?ng s? trang v? T?ng s? b?n ghi.
+
+---
+
+### 15. M?n h?nh Qu?n l? Khung Ch??ng tr?nh ??o t?o 130 T?n ch? (CurriculumPanel)
+![H?nh 3.15: Khung CT?T 130 T?n Ch?](screenshots/hinh_ctdt_k24_130tc.png)
+*H?nh 3.15: Giao di?n Qu?n l? Khung Ch??ng tr?nh ??o t?o 130 t?n ch? 4 n?m (CurriculumPanel)*  
+**M? t?:** Qu?n l? chi ti?t to?n b? 42 m?n h?c v?i t?ng c?ng 130 t?n ch? ph?n b? chu?n h?a qua 8 h?c k? (4 n?m h?c). H? tr? l?c theo t?ng kh?a sinh vi?n (K21, K22, K23, K24, K25) v? t?nh to?n t?ng s? t?n ch? t?ch l?y.
+
+---
+
+### 16. M?n h?nh Nh?t k? Ki?m to?n Ho?t ??ng & An ninh H? th?ng (AuditLogPanel)
+![H?nh 3.16: Nh?t k? Ki?m to?n Audit Log](screenshots/hinh_audit_log.png)
+*H?nh 3.16: Giao di?n Nh?t k? Ki?m to?n Ho?t ??ng & An ninh H? th?ng (AuditLogPanel)*  
+**M? t?:** Gi?m s?t to?n b? ho?t ??ng trong h? th?ng. Ghi nh?n chi ti?t: M? ng??i d?ng, T?n ??ng nh?p, H?nh ??ng, ??i t??ng t?c ??ng, D? li?u c? -> D? li?u m?i, ??a ch? IP v? D?u th?i gian ch?nh x?c t?i t?ng gi?y ph?c v? ki?m to?n v? ch?ng ch?i b?.
+
+---
+
+### 17. M?n h?nh Th?ng k? Gi? d?y & T?i ??o t?o Gi?ng vi?n (ThongKePanel - Gi?ng vi?n)
+![H?nh 3.17: Th?ng k? Gi? d?y Gi?ng vi?n](screenshots/hinh_thongke_giangvien.png)
+*H?nh 3.17: Giao di?n Th?ng k? Gi? d?y & T?i ??o t?o Gi?ng vi?n (ThongKePanel - Gi?ng vi?n)*  
+**M? t?:** ?o l??ng t?ng s? gi? d?y, s? ti?t h?c v? t?i gi?ng d?y c?a t?ng gi?ng vi?n theo tu?n v? h?c k?, h? tr? ph?ng ??o t?o c?n ??i kh?i l??ng c?ng vi?c.
+
+---
+
+### 18. M?n h?nh Th?ng k? Ph?n b? Sinh vi?n theo Ni?n kh?a & L?p h?c (ThongKePanel - Sinh vi?n)
+![H?nh 3.18: Th?ng k? Sinh vi?n theo Kh?a v? L?p](screenshots/hinh_thongke_sinhvien.png)
+*H?nh 3.18: Giao di?n Th?ng k? Ph?n b? Sinh vi?n theo Ni?n kh?a v? L?p h?c (ThongKePanel - Sinh vi?n)*  
+**M? t?:** Ph?n t?ch s? l??ng sinh vi?n theo t?ng kh?a h?c (K21 - K25) v? t?ng l?p chuy?n ng?nh, t?nh to?n t? l? ph?n b? ph?n tr?m gi?p nh? tr??ng n?m b?t quy m? ??o t?o th?c t?.
+
+---
+
+### 19. M?n h?nh Qu?n tr? T?i kho?n ng??i d?ng & Ph?n quy?n 6 vai tr? RBAC (TaiKhoanPanel)
+![H?nh 3.19: Qu?n tr? T?i kho?n & Ph?n quy?n](screenshots/hinh_taikhoan_6roles.png)
+*H?nh 3.19: Giao di?n Qu?n tr? T?i kho?n ng??i d?ng & Ph?n quy?n 6 vai tr? RBAC (TaiKhoanPanel)*  
+**M? t?:** Ph?n h? d?nh ri?ng cho ADMIN: th?m t?i kho?n m?i, c?p ph?t 6 vai tr? RBAC (Admin, BGH, ??o t?o, Tr??ng khoa, Gi?ng vi?n, Sinh vi?n), ??t l?i m?t kh?u v? b?t/t?t tr?ng th?i kh?a t?i kho?n ng??i d?ng.
+
+---
+
+## 3.5. Ki?m th? h? th?ng
+
+**B?ng 3.1: K?ch b?n v? k?t qu? ki?m th? h? th?ng (Test Cases Result)**
+
+| M? Test Case | T?n k?ch b?n ki?m th? | C?c b??c th?c hi?n & D? li?u ??u v?o | K?t qu? mong ??i | Tr?ng th?i |
+|:---:|:---|:---|:---|:---:|
+| **TC01** | X?c th?c ??ng nh?p h?p l? | Nh?p `admin` / `admin123` | ??ng nh?p th?nh c?ng, ?i?u h??ng v?o `MainForm` v?i ??y ?? menu Admin | **PASS** |
+| **TC02** | Ng?n ch?n ??ng nh?p sai m?t kh?u | Nh?p `admin` / `wrongpass` | B?o l?i sai m?t kh?u, t? ch?i truy c?p | **PASS** |
+| **TC03** | Kh?a t?i kho?n b? v? hi?u | ??ng nh?p t?i kho?n tr?ng th?i `0` | B?o l?i t?i kho?n ?? b? kh?a b?i Qu?n tr? vi?n | **PASS** |
+| **TC04** | Ki?m th? Quick Login 6 vai tr? | Nh?p ch?n c?c n?t vai tr? nhanh t?i LoginForm | ??ng nh?p t?c th?i v?i ??ng quy?n h?n t??ng ?ng | **PASS** |
+| **TC05** | Xung ??t Tr?ng Ph?ng h?c | X?p l?ch ph?ng A101 c?ng Th?, Ti?t, Tu?n v?i l?ch ?? c? | B?o l?i xung ??t ph?ng h?c, t? ch?i l?u v?o CSDL | **PASS** |
+| **TC06** | Xung ??t Tr?ng Gi?ng vi?n | X?p GV0001 d?y 2 l?p kh?c nhau c?ng m?t khung gi? | B?o l?i gi?ng vi?n ?ang b?n gi?ng d?y | **PASS** |
+| **TC07** | Xung ??t Tr?ng L?p h?c | X?p l?p D21CNPM1 h?c 2 m?n c?ng th?i ?i?m | B?o l?i l?p sinh vi?n ?ang c? l?ch h?c | **PASS** |
+| **TC08** | Kh?a ph?ng ?ang b?o tr? | X?p l?ch v?o ph?ng c? tr?ng th?i `BAO_TRI` | T? ch?i x?p l?ch, y?u c?u ch?n ph?ng ?ang s? d?ng | **PASS** |
+| **TC09** | R?ng bu?c lo?i ph?ng th?c h?nh | M?n `THUC_HANH` x?p v?o ph?ng `LY_THUYET` | T? ch?i x?p l?ch, y?u c?u ch?n ph?ng m?y t?nh | **PASS** |
+| **TC10** | C?nh b?o qu? t?i s?c ch?a | X?p l?p s? s? 80 v?o ph?ng s?c ch?a 50 | Hi?n th? h?p tho?i c?nh b?o v??t qu? s?c ch?a | **PASS** |
+| **TC11** | ?? xu?t ??i l?ch c?a Gi?ng vi?n | Gi?ng vi?n g?i ??n ??i ca d?y (ch?n ph?ng v? gi? m?i) | ??n ???c t?o th?nh c?ng, chuy?n sang tr?ng th?i `CHO_KHOA_DUYET` | **PASS** |
+| **TC12** | Ph? duy?t ??i l?ch 2 c?p | Tr??ng Khoa duy?t c?p 1 -> ??o t?o duy?t c?p 2 | ??n chuy?n sang `DA_PHE_DUYET`, TKB t? ??ng ho?n ??i | **PASS** |
+| **TC13** | Ph?n trang danh s?ch sinh vi?n | Chuy?n gi?a trang 1, 2, 3 v? l?c theo l?p | D? li?u hi?n th? ??ng 20 m?c/trang, kh?ng m?t tr?ng th?i ph?n trang | **PASS** |
+| **TC14** | Ghi nh?n Audit Log an ninh | Th?c hi?n ??i m?t kh?u ho?c x?p l?ch m?i | B?n ghi m?i xu?t hi?n trong `AuditLogPanel` k?m IP v? th?i gian | **PASS** |
+| **TC15** | Xu?t b?o c?o Excel UTF-8 BOM | Nh?n n?t Xu?t Excel t?i ThoiKhoaBieuPanel | File CSV/Excel m? b?ng MS Excel hi?n th? ??ng ti?ng Vi?t c? d?u | **PASS** |
+
+---
+
+# K?T LU?N
+
+## 1. K?t qu? thu ???c c?a ?? t?i
+Qua qu? tr?nh nghi?n c?u, thi?t k? v? ph?t tri?n ?? t?i **CNJ56: "X?y d?ng ?ng d?ng desktop qu?n l? th?i kh?a bi?u v? t?i nguy?n ph?ng h?c"**, nh?m sinh vi?n ?? ??t ???c c?c k?t qu? n?i b?t sau:
+1. **X?y d?ng ho?n ch?nh ?ng d?ng Desktop Java Swing chuy?n nghi?p:**
+   - ?ng d?ng tu?n th? chu?n ki?n tr?c ph?n t?ng (Presentation -> Controller -> Service -> DAO -> Database).
+   - T??ng th?ch ho?n to?n v?i m?i tr??ng NetBeans IDE, m?y ch? XAMPP MySQL.
+2. **C?i ??t th?nh c?ng thu?t to?n ki?m tra xung ??t th?i kh?a bi?u th?i gian th?c 6 chi?u:**
+   - Gi?i quy?t tri?t ?? b?i to?n x?p l?ch trong kh?ng gian ?a chi?u (Th?i gian $\times$ T?i nguy?n $\times$ Gi?ng vi?n $\times$ L?p h?c).
+   - T? ??ng ph?t hi?n v? ng?n ch?n t?c th?i tr?ng ph?ng, tr?ng gi?ng vi?n, tr?ng l?p, sai lo?i ph?ng th?c h?nh, ph?ng ?ang b?o tr? v? c?nh b?o v??t s?c ch?a.
+3. **Tri?n khai th?nh c?ng c?c module n?ng cao:**
+   - L??i TKB ?a chi?u: Ma tr?n 12 ti?t x 7 ng?y, L??i d?ng Kh?i (Block View), TKB gi?ng d?y c? nh?n c?a gi?ng vi?n.
+   - Quy tr?nh ??i l?ch 2 c?p ?? ho?n ch?nh (Khoa duy?t c?p 1 -> ??o t?o duy?t c?p 2).
+   - Qu?n l? khung ch??ng tr?nh ??o t?o chu?n ??i h?c 130 t?n ch? 4 n?m (42 m?n h?c cho c?c kh?a K21 - K25).
+   - Qu?n l? sinh vi?n t?ch h?p thanh ph?n trang chu?n h?a `PaginationBar`.
+   - Nh?t k? ki?m to?n an ninh h? th?ng `AuditLog` ch?ng ch?i b? tr?ch nhi?m.
+4. **B?o m?t v? to?n v?n d? li?u:**
+   - ?p d?ng thu?t to?n b?m m?t chi?u SHA-256 b?o v? m?t kh?u ng??i d?ng.
+   - 100% c?u l?nh truy v?n s? d?ng JDBC PreparedStatement ch?ng t?n c?ng SQL Injection.
+   - C? s? d? li?u quan h? ??t chu?n 3NF v?i c?c r?ng bu?c kh?a ngo?i ch?t ch?.
+
+## 2. H?n ch? v? h??ng ph?t tri?n c?a ?? t?i
+- **H?n ch?:** H? th?ng hi?n t?i ho?t ??ng theo c? ch? h? tr? x?p l?ch b?n t? ??ng (Interactive Assisted Scheduling), ch?a t? ??ng x?p l?ch 100% t? ??ng ho?n to?n cho to?n tr??ng b?ng thu?t to?n t?i ?u h?a to?n c?c.
+- **H??ng ph?t tri?n trong t??ng lai:**
+  1. Nghi?n c?u v? ?ng d?ng **Thu?t to?n Di truy?n (Genetic Algorithm - GA)** ho?c **T?m ki?m C?m (Tabu Search)** ?? t? ??ng sinh th?i kh?a bi?u t?i ?u cho to?n tr??ng ch? b?ng m?t n?t b?m.
+  2. Ph?t tri?n h? sinh th?i ?a n?n t?ng: X?y d?ng h? th?ng Backend API (Spring Boot RESTful API) v? ?ng d?ng di ??ng (Flutter / React Native) ?? gi?ng vi?n v? sinh vi?n tra c?u TKB tr?c ti?p tr?n ?i?n tho?i th?ng minh.
+  3. M? r?ng Qu?n l? Thi?t b? & T?i nguy?n th?ng minh b?ng c?ng ngh? m? v?ch / QR Code g?n t?i t?ng ph?ng h?c.
+
+---
+
+# DANH M?C T?I LI?U THAM KH?O
+
+1. Oracle Corporation, *"Java? Platform, Standard Edition 8 API Specification"*, docs.oracle.com/javase/8/docs/api/.
+2. Oracle Corporation, *"MySQL 8.0 Reference Manual & Connector/J Documentation"*, dev.mysql.com/doc/.
+3. Apache Software Foundation, *"NetBeans IDE Documentation & GUI Builder Tutorial"*, netbeans.apache.org.
+4. Unicode Consortium, *"The Unicode Standard ? UTF-8 Byte Order Mark"*, unicode.org.
+5. ?o?n V?n Ban, *Gi?o tr?nh L?p tr?nh H??ng ??i t??ng v?i Java*, NXB Khoa h?c v? K? thu?t.
+6. ?? Trung Tu?n, *Gi?o tr?nh C? s? D? li?u*, NXB ??i h?c Qu?c gia H? N?i.
+7. Robert C. Martin, *Clean Architecture: A Craftsman's Guide to Software Structure and Design*, Prentice Hall.
+8. Edmund Burke, Dave Corne, *Automated Timetabling: Practice and Theory*, Springer.
