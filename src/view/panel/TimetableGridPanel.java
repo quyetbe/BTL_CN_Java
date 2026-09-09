@@ -11,6 +11,7 @@ import model.ThoiKhoaBieu;
 import service.XepLichService;
 import util.ExportUtil;
 import util.UIUtil;
+import view.dialog.DoiLichDialog;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -23,6 +24,7 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +36,7 @@ import java.util.Map;
  * Trục ngang: Thứ 2 -> Chủ Nhật (7 cột).
  * Trục dọc: 12 Tiết học (Tiết 1 -> 12).
  * Hỗ trợ lọc theo: Học kỳ, Năm học, Tuần, và Đối tượng (Theo Phòng / Theo Giảng viên / Theo Lớp).
+ * Tích hợp Phóng to / Thu nhỏ trực quan (Shift + Cuộn chuột / Zoom Toolbar).
  */
 public class TimetableGridPanel extends JPanel {
 
@@ -44,12 +47,17 @@ public class TimetableGridPanel extends JPanel {
 
     private JComboBox<String> cbHocKy;
     private JComboBox<String> cbNamHoc;
+    private JComboBox<String> cbKhoa;
     private JSpinner spnrTuan;
     private JComboBox<String> cbViewMode;
     private JComboBox<String> cbTargetObject;
 
     private JTable gridTable;
     private DefaultTableModel gridModel;
+    private JScrollPane scrollPane;
+
+    private double zoomFactor = 1.0;
+    private JLabel lblZoomPercent;
 
     // Ánh xạ tọa độ ô (row = tiet-1, col = thu-1) -> List<ThoiKhoaBieu>
     private final Map<String, List<ThoiKhoaBieu>> cellScheduleMap = new HashMap<>();
@@ -79,44 +87,95 @@ public class TimetableGridPanel extends JPanel {
         lblTitle.setForeground(UIUtil.TEXT_DARK);
         pnlTop.add(lblTitle, BorderLayout.NORTH);
 
-        // Control Toolbar
-        JPanel pnlControls = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        // Control Toolbar: Chia 2 hàng trực quan, không bị tràn viền
+        JPanel pnlControls = new JPanel(new GridLayout(2, 1, 0, 6));
         pnlControls.setBackground(Color.WHITE);
-        pnlControls.setBorder(new CompoundBorder(new LineBorder(UIUtil.BORDER_COLOR, 1), new EmptyBorder(4, 8, 4, 8)));
+        pnlControls.setBorder(new CompoundBorder(new LineBorder(UIUtil.BORDER_COLOR, 1), new EmptyBorder(6, 10, 6, 10)));
 
-        pnlControls.add(new JLabel("Học kỳ:"));
+        // Hàng 1: Bộ lọc dữ liệu
+        JPanel pnlRow1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 2));
+        pnlRow1.setOpaque(false);
+
+        pnlRow1.add(new JLabel("Học kỳ:"));
         cbHocKy = new JComboBox<>(new String[]{"HK1", "HK2", "HK3"});
-        pnlControls.add(cbHocKy);
+        pnlRow1.add(cbHocKy);
 
-        pnlControls.add(new JLabel("Năm học:"));
-        cbNamHoc = new JComboBox<>(new String[]{"2025-2026", "2024-2025"});
-        pnlControls.add(cbNamHoc);
+        pnlRow1.add(new JLabel("Năm học:"));
+        cbNamHoc = new JComboBox<>();
+        pnlRow1.add(cbNamHoc);
 
-        pnlControls.add(new JLabel("Tuần học:"));
+        pnlRow1.add(new JLabel("Khóa:"));
+        cbKhoa = new JComboBox<>(new String[]{"TẤT CẢ KHÓA", "K21", "K22", "K23", "K24"});
+        cbKhoa.addActionListener(e -> {
+            updateTargetDropdown();
+            renderGrid();
+        });
+        pnlRow1.add(cbKhoa);
+
+        pnlRow1.add(new JLabel("Tuần học:"));
         spnrTuan = new JSpinner(new SpinnerNumberModel(1, 1, 52, 1));
         spnrTuan.setPreferredSize(new Dimension(55, 24));
-        pnlControls.add(spnrTuan);
+        pnlRow1.add(spnrTuan);
 
-        pnlControls.add(new JLabel("Chế độ xem:"));
+        pnlRow1.add(new JLabel("Chế độ xem:"));
         cbViewMode = new JComboBox<>(new String[]{
                 "Xem theo Lớp học",
                 "Xem theo Phòng học",
                 "Xem theo Giảng viên",
                 "Xem Toàn trường (Tất cả)"
         });
-        pnlControls.add(cbViewMode);
+        cbViewMode.addActionListener(e -> {
+            updateTargetDropdown();
+            renderGrid();
+        });
+        pnlRow1.add(cbViewMode);
 
         cbTargetObject = new JComboBox<>();
         cbTargetObject.setPreferredSize(new Dimension(220, 24));
-        pnlControls.add(cbTargetObject);
+        pnlRow1.add(cbTargetObject);
 
         JButton btnApply = UIUtil.createPrimaryButton("Xem Lịch");
         btnApply.addActionListener(e -> renderGrid());
-        pnlControls.add(btnApply);
+        pnlRow1.add(btnApply);
+
+        // Hàng 2: Tác vụ & Phóng to / Thu nhỏ
+        JPanel pnlRow2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 2));
+        pnlRow2.setOpaque(false);
 
         JButton btnExport = UIUtil.createSuccessButton("Xuất Bảng CSV");
         btnExport.addActionListener(e -> exportGridToCSV());
-        pnlControls.add(btnExport);
+        pnlRow2.add(btnExport);
+
+        JButton btnDoiLich = UIUtil.createPrimaryButton("Đề Xuất Đổi Lịch");
+        btnDoiLich.addActionListener(e -> openDoiLichDialog(null));
+        pnlRow2.add(btnDoiLich);
+
+        pnlRow2.add(new JLabel("  |  Thu phóng:"));
+        JButton btnZoomIn = UIUtil.createSecondaryButton("+");
+        btnZoomIn.setToolTipText("Phóng to lưới TKB (+15%)");
+        btnZoomIn.setPreferredSize(new Dimension(42, 26));
+        btnZoomIn.addActionListener(e -> zoomIn());
+        pnlRow2.add(btnZoomIn);
+
+        JButton btnZoomOut = UIUtil.createSecondaryButton("-");
+        btnZoomOut.setToolTipText("Thu nhỏ lưới TKB (-15%)");
+        btnZoomOut.setPreferredSize(new Dimension(42, 26));
+        btnZoomOut.addActionListener(e -> zoomOut());
+        pnlRow2.add(btnZoomOut);
+
+        JButton btnZoomReset = UIUtil.createSecondaryButton("100%");
+        btnZoomReset.setToolTipText("Đặt lại kích thước gốc 100%");
+        btnZoomReset.setPreferredSize(new Dimension(68, 26));
+        btnZoomReset.addActionListener(e -> resetZoom());
+        pnlRow2.add(btnZoomReset);
+
+        lblZoomPercent = new JLabel("Zoom: 100%");
+        lblZoomPercent.setFont(UIUtil.FONT_BOLD);
+        lblZoomPercent.setForeground(UIUtil.TEXT_DARK);
+        pnlRow2.add(lblZoomPercent);
+
+        pnlControls.add(pnlRow1);
+        pnlControls.add(pnlRow2);
 
         cbViewMode.addActionListener(e -> updateTargetDropdown());
 
@@ -136,10 +195,11 @@ public class TimetableGridPanel extends JPanel {
         };
 
         gridTable = new JTable(gridModel);
-        gridTable.setRowHeight(56);
+        gridTable.setRowHeight(62);
         gridTable.setFont(UIUtil.FONT_REGULAR);
         gridTable.setGridColor(UIUtil.BORDER_COLOR);
         gridTable.setShowGrid(true);
+        gridTable.setIntercellSpacing(new Dimension(2, 2));
         gridTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JTableHeader header = gridTable.getTableHeader();
@@ -171,14 +231,40 @@ public class TimetableGridPanel extends JPanel {
             }
         });
 
-        JScrollPane scrollPane = new JScrollPane(gridTable);
+        scrollPane = new JScrollPane(gridTable);
         scrollPane.setBorder(new LineBorder(UIUtil.BORDER_COLOR, 1));
+        scrollPane.setWheelScrollingEnabled(true);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(28);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(28);
+
+        // Cuộn chuột mượt mà lên xuống khi trỏ chuột vào TKB (hoặc Zoom khi giữ phím Shift / Ctrl)
+        MouseWheelListener gridWheelListener = e -> {
+            if (e.isShiftDown() || e.isControlDown()) {
+                if (e.getWheelRotation() < 0) {
+                    zoomIn();
+                } else {
+                    zoomOut();
+                }
+                e.consume();
+            } else {
+                JScrollBar vBar = scrollPane.getVerticalScrollBar();
+                if (vBar != null && vBar.isVisible()) {
+                    int rotation = e.getWheelRotation();
+                    int step = vBar.getUnitIncrement() * 3;
+                    vBar.setValue(vBar.getValue() + rotation * step);
+                    e.consume();
+                }
+            }
+        };
+        gridTable.addMouseWheelListener(gridWheelListener);
+        scrollPane.addMouseWheelListener(gridWheelListener);
+
         add(scrollPane, BorderLayout.CENTER);
 
         // Bottom Note
         JPanel pnlBottom = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 4));
         pnlBottom.setOpaque(false);
-        JLabel lblNote = new JLabel("Lưu ý: Nhấp đúp chuột (Double click) vào ô có lịch để xem toàn bộ thông tin chi tiết.");
+        JLabel lblNote = new JLabel("Lưu ý: Nhấp đúp chuột vào ô để xem chi tiết / đề xuất đổi lịch. Giữ phím SHIFT + Cuộn chuột (hoặc nút +/-) để Phóng to / Thu nhỏ lưới.");
         lblNote.setFont(UIUtil.FONT_SMALL);
         lblNote.setForeground(UIUtil.TEXT_MUTED);
         pnlBottom.add(lblNote);
@@ -190,6 +276,11 @@ public class TimetableGridPanel extends JPanel {
         for (String y : thoiKhoaBieuDAO.getDistinctAcademicYears()) {
             cbNamHoc.addItem(y);
         }
+        cbKhoa.removeAllItems();
+        cbKhoa.addItem("TẤT CẢ KHÓA");
+        for (String k : thoiKhoaBieuDAO.getDistinctKhoaHoc()) {
+            cbKhoa.addItem(k);
+        }
         updateTargetDropdown();
     }
 
@@ -199,8 +290,17 @@ public class TimetableGridPanel extends JPanel {
 
         if (mode == 0) { // Theo Lớp
             cbTargetObject.setEnabled(true);
+            String selKhoa = (String) cbKhoa.getSelectedItem();
+            int count = 0;
             for (LopHoc l : lopHocDAO.getAll()) {
+                if (selKhoa != null && !selKhoa.equals("TẤT CẢ KHÓA") && !selKhoa.equalsIgnoreCase(l.getKhoaHoc())) {
+                    continue;
+                }
                 cbTargetObject.addItem(l.getMaLop() + " - " + l.getTenLop());
+                count++;
+            }
+            if (count == 0) {
+                cbTargetObject.addItem("Không có lớp thuộc khóa này");
             }
         } else if (mode == 1) { // Theo Phòng
             cbTargetObject.setEnabled(true);
@@ -231,7 +331,10 @@ public class TimetableGridPanel extends JPanel {
         String maGv = (mode == 2) ? targetCode : null;
         String maLop = (mode == 0) ? targetCode : null;
 
-        List<ThoiKhoaBieu> list = thoiKhoaBieuDAO.getByFilter(hocKy, namHoc, tuan, maPhong, maGv, maLop, null);
+        String selKhoa = (String) cbKhoa.getSelectedItem();
+        String filterKhoa = (selKhoa != null && !selKhoa.equals("TẤT CẢ KHÓA")) ? selKhoa : null;
+
+        List<ThoiKhoaBieu> list = thoiKhoaBieuDAO.getByFilter(hocKy, namHoc, tuan, maPhong, maGv, maLop, null, filterKhoa);
 
         cellScheduleMap.clear();
 
@@ -255,7 +358,7 @@ public class TimetableGridPanel extends JPanel {
                 String key = row + "_" + col;
                 cellScheduleMap.computeIfAbsent(key, k -> new ArrayList<>()).add(tkb);
 
-                StringBuilder sb = new StringBuilder("<html><div style='padding:2px;'>");
+                StringBuilder sb = new StringBuilder("<html><div style='text-align:center; padding:4px 6px;'>");
                 List<ThoiKhoaBieu> schedulesInCell = cellScheduleMap.get(key);
                 for (int i = 0; i < schedulesInCell.size(); i++) {
                     ThoiKhoaBieu s = schedulesInCell.get(i);
@@ -298,7 +401,62 @@ public class TimetableGridPanel extends JPanel {
         JTextArea ta = new JTextArea(sb.toString(), 14, 40);
         ta.setFont(UIUtil.FONT_REGULAR);
         ta.setEditable(false);
-        JOptionPane.showMessageDialog(this, new JScrollPane(ta), "Chi Tiết Lịch Giảng Dạy", JOptionPane.PLAIN_MESSAGE);
+
+        Object[] options = {"Đóng", "Đề Xuất Đổi Ca Này"};
+        int opt = JOptionPane.showOptionDialog(this, new JScrollPane(ta), "Chi Tiết Lịch Giảng Dạy",
+                JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        if (opt == 1 && !list.isEmpty()) {
+            openDoiLichDialog(list.get(0));
+        }
+    }
+
+    public void zoomIn() {
+        if (zoomFactor < 2.0) {
+            zoomFactor = Math.min(2.0, zoomFactor + 0.15);
+            applyZoom();
+        }
+    }
+
+    public void zoomOut() {
+        if (zoomFactor > 0.5) {
+            zoomFactor = Math.max(0.5, zoomFactor - 0.15);
+            applyZoom();
+        }
+    }
+
+    public void resetZoom() {
+        zoomFactor = 1.0;
+        applyZoom();
+    }
+
+    private void applyZoom() {
+        int rowHeight = (int) Math.round(62 * zoomFactor);
+        gridTable.setRowHeight(Math.max(32, rowHeight));
+
+        int col0 = (int) Math.round(100 * zoomFactor);
+        int colN = (int) Math.round(150 * zoomFactor);
+        gridTable.getColumnModel().getColumn(0).setPreferredWidth(col0);
+        for (int i = 1; i <= 7; i++) {
+            gridTable.getColumnModel().getColumn(i).setPreferredWidth(colN);
+        }
+
+        int fontSize = Math.max(10, (int) Math.round(12 * zoomFactor));
+        gridTable.setFont(new Font("Segoe UI", Font.PLAIN, fontSize));
+
+        if (lblZoomPercent != null) {
+            lblZoomPercent.setText(String.format("Zoom: %d%%", (int) Math.round(zoomFactor * 100)));
+        }
+        gridTable.revalidate();
+        gridTable.repaint();
+    }
+
+    private void openDoiLichDialog(ThoiKhoaBieu initialTkb) {
+        Window parent = SwingUtilities.getWindowAncestor(this);
+        DoiLichDialog dialog = new DoiLichDialog(parent, initialTkb);
+        dialog.setVisible(true);
+        if (dialog.isSubmitted()) {
+            renderGrid();
+        }
     }
 
     private void exportGridToCSV() {
@@ -327,15 +485,15 @@ public class TimetableGridPanel extends JPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            setHorizontalAlignment(CENTER);
+            setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
 
             if (column == 0) {
                 setBackground(new Color(241, 245, 249));
                 setFont(UIUtil.FONT_BOLD);
                 setForeground(UIUtil.TEXT_DARK);
-                setHorizontalAlignment(CENTER);
             } else {
                 setFont(UIUtil.FONT_SMALL);
-                setHorizontalAlignment(LEFT);
                 if (value != null && !value.toString().trim().isEmpty()) {
                     setBackground(new Color(239, 246, 255));
                     setForeground(UIUtil.TEXT_DARK);

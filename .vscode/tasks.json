@@ -2,9 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Chạy Ứng Dụng (Run App)",
+            "label": "Chạy Web (Run Web Server localhost:3000)",
             "type": "shell",
-            "command": ".\\run.bat",
+            "command": ".\\run_web.bat",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -17,7 +17,19 @@
             "problemMatcher": []
         },
         {
-            "label": "Chạy Kiểm Thử (Run Tests)",
+            "label": "Chạy Ứng Dụng Java Swing (Run Desktop App)",
+            "type": "shell",
+            "command": ".\\run.bat",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "focus": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Chạy Kiểm Thử Java (Run Tests)",
             "type": "shell",
             "command": "javac -encoding UTF-8 -cp \"lib/mysql-connector-j-8.3.0.jar;src\" -d build/classes test/TestLogicRunner.java; java -cp \"lib/mysql-connector-j-8.3.0.jar;build/classes;src\" TestLogicRunner",
             "presentation": {

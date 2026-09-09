@@ -10,8 +10,10 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +27,9 @@ public class MonHocPanel extends JPanel {
 
     private JTextField txtSearch;
     private JComboBox<String> cbFilterLoaiMon;
+    private PaginationBar paginationBar;
+
+    private List<MonHoc> currentList = new ArrayList<>();
 
     private JButton btnAdd;
     private JButton btnEdit;
@@ -58,10 +63,12 @@ public class MonHocPanel extends JPanel {
 
         pnlFilter.add(new JLabel("Tìm kiếm:"));
         txtSearch = new JTextField(15);
+        txtSearch.addActionListener(e -> searchData());
         pnlFilter.add(txtSearch);
 
         pnlFilter.add(new JLabel("Loại môn:"));
         cbFilterLoaiMon = new JComboBox<>(new String[]{"TẤT CẢ", "LY_THUYET", "THUC_HANH"});
+        cbFilterLoaiMon.addActionListener(e -> searchData());
         pnlFilter.add(cbFilterLoaiMon);
 
         JButton btnSearch = UIUtil.createPrimaryButton("Lọc Dữ Liệu");
@@ -72,7 +79,7 @@ public class MonHocPanel extends JPanel {
         add(pnlTop, BorderLayout.NORTH);
 
         // Center Table
-        String[] columns = {"Mã Môn", "Tên Môn Học", "Số Tín Chỉ", "Loại Môn Học"};
+        String[] columns = {"STT", "Mã Môn", "Tên Môn Học", "Số Tín Chỉ", "Loại Môn Học"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -82,16 +89,28 @@ public class MonHocPanel extends JPanel {
 
         table = new JTable(tableModel);
         UIUtil.formatTable(table);
-        table.getColumnModel().getColumn(0).setPreferredWidth(100);
-        table.getColumnModel().getColumn(1).setPreferredWidth(260);
-        table.getColumnModel().getColumn(2).setPreferredWidth(100);
-        table.getColumnModel().getColumn(3).setPreferredWidth(160);
+        table.setRowHeight(34);
+        table.getColumnModel().getColumn(0).setPreferredWidth(55);
+        table.getColumnModel().getColumn(1).setPreferredWidth(100);
+        table.getColumnModel().getColumn(2).setPreferredWidth(260);
+        table.getColumnModel().getColumn(3).setPreferredWidth(100);
+        table.getColumnModel().getColumn(4).setPreferredWidth(160);
+
+        // Căn giữa TOÀN BỘ các cột trong bảng
+        UIUtil.centerAllColumns(table);
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(new LineBorder(UIUtil.BORDER_COLOR, 1));
         add(scrollPane, BorderLayout.CENTER);
 
-        // Bottom Action Buttons
+        // Bottom Actions & Pagination
+        JPanel pnlSouth = new JPanel(new BorderLayout(0, 4));
+        pnlSouth.setOpaque(false);
+
+        paginationBar = new PaginationBar(20);
+        paginationBar.setPageChangeListener(newPage -> renderCurrentPage());
+        pnlSouth.add(paginationBar, BorderLayout.NORTH);
+
         JPanel pnlBottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 6));
         pnlBottom.setOpaque(false);
 
@@ -119,7 +138,8 @@ public class MonHocPanel extends JPanel {
         pnlBottom.add(btnAdd);
         pnlBottom.add(btnEdit);
         pnlBottom.add(btnDelete);
-        add(pnlBottom, BorderLayout.SOUTH);
+        pnlSouth.add(pnlBottom, BorderLayout.SOUTH);
+        add(pnlSouth, BorderLayout.SOUTH);
     }
 
     public void loadData() {
@@ -130,11 +150,24 @@ public class MonHocPanel extends JPanel {
         String keyword = txtSearch.getText().trim();
         String loaiMon = (String) cbFilterLoaiMon.getSelectedItem();
 
-        List<MonHoc> list = monHocDAO.search(keyword, loaiMon);
-        tableModel.setRowCount(0);
+        currentList = monHocDAO.search(keyword, loaiMon);
+        paginationBar.update(1, 20, currentList.size());
+        renderCurrentPage();
+    }
 
-        for (MonHoc mh : list) {
+    private void renderCurrentPage() {
+        tableModel.setRowCount(0);
+        if (currentList == null || currentList.isEmpty()) return;
+
+        int page = paginationBar.getCurrentPage();
+        int pageSize = paginationBar.getPageSize();
+        List<MonHoc> pageList = PaginationBar.getPageSlice(currentList, page, pageSize);
+
+        int startStt = (page - 1) * pageSize + 1;
+        for (int i = 0; i < pageList.size(); i++) {
+            MonHoc mh = pageList.get(i);
             tableModel.addRow(new Object[]{
+                    startStt + i,
                     mh.getMaMon(),
                     mh.getTenMon(),
                     mh.getSoTinChi() + " TC",
@@ -159,7 +192,7 @@ public class MonHocPanel extends JPanel {
             return;
         }
 
-        String maMon = (String) tableModel.getValueAt(selectedRow, 0);
+        String maMon = (String) tableModel.getValueAt(selectedRow, 1);
         MonHoc mh = monHocDAO.getById(maMon);
         if (mh != null) {
             Frame parent = (Frame) SwingUtilities.getWindowAncestor(this);
@@ -183,8 +216,8 @@ public class MonHocPanel extends JPanel {
             return;
         }
 
-        String maMon = (String) tableModel.getValueAt(selectedRow, 0);
-        String tenMon = (String) tableModel.getValueAt(selectedRow, 1);
+        String maMon = (String) tableModel.getValueAt(selectedRow, 1);
+        String tenMon = (String) tableModel.getValueAt(selectedRow, 2);
 
         if (monHocDAO.isReferencedInSchedule(maMon)) {
             JOptionPane.showMessageDialog(this,

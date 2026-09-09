@@ -246,6 +246,11 @@ public class XepLichService {
 
     public List<ThoiKhoaBieu> getScheduleList(String hocKy, String namHoc, Integer tuan,
                                               String maPhong, String maGv, String maLop, Integer thu) {
-        return thoiKhoaBieuDAO.getByFilter(hocKy, namHoc, tuan, maPhong, maGv, maLop, thu);
+        return thoiKhoaBieuDAO.getByFilter(hocKy, namHoc, tuan, maPhong, maGv, maLop, thu, null);
+    }
+
+    public List<ThoiKhoaBieu> getScheduleList(String hocKy, String namHoc, Integer tuan,
+                                              String maPhong, String maGv, String maLop, Integer thu, String khoaHoc) {
+        return thoiKhoaBieuDAO.getByFilter(hocKy, namHoc, tuan, maPhong, maGv, maLop, thu, khoaHoc);
     }
 }

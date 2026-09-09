@@ -10,8 +10,10 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +27,9 @@ public class LopHocPanel extends JPanel {
 
     private JTextField txtSearch;
     private JComboBox<String> cbFilterKhoaHoc;
+    private PaginationBar paginationBar;
+
+    private List<LopHoc> currentList = new ArrayList<>();
 
     private JButton btnAdd;
     private JButton btnEdit;
@@ -58,10 +63,12 @@ public class LopHocPanel extends JPanel {
 
         pnlFilter.add(new JLabel("Tìm kiếm:"));
         txtSearch = new JTextField(15);
+        txtSearch.addActionListener(e -> searchData());
         pnlFilter.add(txtSearch);
 
         pnlFilter.add(new JLabel("Khóa học:"));
         cbFilterKhoaHoc = new JComboBox<>(new String[]{"TẤT CẢ"});
+        cbFilterKhoaHoc.addActionListener(e -> searchData());
         pnlFilter.add(cbFilterKhoaHoc);
 
         JButton btnSearch = UIUtil.createPrimaryButton("Lọc Dữ Liệu");
@@ -72,7 +79,7 @@ public class LopHocPanel extends JPanel {
         add(pnlTop, BorderLayout.NORTH);
 
         // Center Table
-        String[] columns = {"Mã Lớp", "Tên Lớp Học", "Sĩ Số Sinh Viên", "Khóa Học"};
+        String[] columns = {"STT", "Mã Lớp", "Tên Lớp Học", "Sĩ Số Sinh Viên", "Khóa Học"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -82,16 +89,28 @@ public class LopHocPanel extends JPanel {
 
         table = new JTable(tableModel);
         UIUtil.formatTable(table);
-        table.getColumnModel().getColumn(0).setPreferredWidth(120);
-        table.getColumnModel().getColumn(1).setPreferredWidth(260);
-        table.getColumnModel().getColumn(2).setPreferredWidth(120);
-        table.getColumnModel().getColumn(3).setPreferredWidth(140);
+        table.setRowHeight(34);
+        table.getColumnModel().getColumn(0).setPreferredWidth(55);
+        table.getColumnModel().getColumn(1).setPreferredWidth(120);
+        table.getColumnModel().getColumn(2).setPreferredWidth(260);
+        table.getColumnModel().getColumn(3).setPreferredWidth(120);
+        table.getColumnModel().getColumn(4).setPreferredWidth(140);
+
+        // Căn giữa TOÀN BỘ các cột trong bảng
+        UIUtil.centerAllColumns(table);
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(new LineBorder(UIUtil.BORDER_COLOR, 1));
         add(scrollPane, BorderLayout.CENTER);
 
-        // Bottom Action Buttons
+        // Bottom Actions & Pagination
+        JPanel pnlSouth = new JPanel(new BorderLayout(0, 4));
+        pnlSouth.setOpaque(false);
+
+        paginationBar = new PaginationBar(20);
+        paginationBar.setPageChangeListener(newPage -> renderCurrentPage());
+        pnlSouth.add(paginationBar, BorderLayout.NORTH);
+
         JPanel pnlBottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 6));
         pnlBottom.setOpaque(false);
 
@@ -119,7 +138,8 @@ public class LopHocPanel extends JPanel {
         pnlBottom.add(btnAdd);
         pnlBottom.add(btnEdit);
         pnlBottom.add(btnDelete);
-        add(pnlBottom, BorderLayout.SOUTH);
+        pnlSouth.add(pnlBottom, BorderLayout.SOUTH);
+        add(pnlSouth, BorderLayout.SOUTH);
     }
 
     public void loadData() {
@@ -137,11 +157,24 @@ public class LopHocPanel extends JPanel {
         String keyword = txtSearch.getText().trim();
         String batch = (String) cbFilterKhoaHoc.getSelectedItem();
 
-        List<LopHoc> list = lopHocDAO.search(keyword, batch);
-        tableModel.setRowCount(0);
+        currentList = lopHocDAO.search(keyword, batch);
+        paginationBar.update(1, 20, currentList.size());
+        renderCurrentPage();
+    }
 
-        for (LopHoc lh : list) {
+    private void renderCurrentPage() {
+        tableModel.setRowCount(0);
+        if (currentList == null || currentList.isEmpty()) return;
+
+        int page = paginationBar.getCurrentPage();
+        int pageSize = paginationBar.getPageSize();
+        List<LopHoc> pageList = PaginationBar.getPageSlice(currentList, page, pageSize);
+
+        int startStt = (page - 1) * pageSize + 1;
+        for (int i = 0; i < pageList.size(); i++) {
+            LopHoc lh = pageList.get(i);
             tableModel.addRow(new Object[]{
+                    startStt + i,
                     lh.getMaLop(),
                     lh.getTenLop(),
                     lh.getSiSo() + " sinh viên",
@@ -166,7 +199,7 @@ public class LopHocPanel extends JPanel {
             return;
         }
 
-        String maLop = (String) tableModel.getValueAt(selectedRow, 0);
+        String maLop = (String) tableModel.getValueAt(selectedRow, 1);
         LopHoc lh = lopHocDAO.getById(maLop);
         if (lh != null) {
             Frame parent = (Frame) SwingUtilities.getWindowAncestor(this);
@@ -190,8 +223,8 @@ public class LopHocPanel extends JPanel {
             return;
         }
 
-        String maLop = (String) tableModel.getValueAt(selectedRow, 0);
-        String tenLop = (String) tableModel.getValueAt(selectedRow, 1);
+        String maLop = (String) tableModel.getValueAt(selectedRow, 1);
+        String tenLop = (String) tableModel.getValueAt(selectedRow, 2);
 
         if (lopHocDAO.isReferencedInSchedule(maLop)) {
             JOptionPane.showMessageDialog(this,

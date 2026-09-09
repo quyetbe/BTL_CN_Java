@@ -23,12 +23,17 @@ public class MainForm extends JFrame {
     private static final String CARD_DASHBOARD = "CARD_DASHBOARD";
     private static final String CARD_GRID = "CARD_GRID";
     private static final String CARD_SCHEDULE = "CARD_SCHEDULE";
+    private static final String CARD_PROPOSE = "CARD_PROPOSE";
+    private static final String CARD_WORKFLOW = "CARD_WORKFLOW";
+    private static final String CARD_CURRICULUM = "CARD_CURRICULUM";
     private static final String CARD_ROOMS = "CARD_ROOMS";
     private static final String CARD_TEACHERS = "CARD_TEACHERS";
+    private static final String CARD_STUDENTS = "CARD_STUDENTS";
     private static final String CARD_SUBJECTS = "CARD_SUBJECTS";
     private static final String CARD_CLASSES = "CARD_CLASSES";
     private static final String CARD_STATS = "CARD_STATS";
     private static final String CARD_USERS = "CARD_USERS";
+    private static final String CARD_AUDIT = "CARD_AUDIT";
 
     private CardLayout cardLayout;
     private JPanel pnlContent;
@@ -36,12 +41,17 @@ public class MainForm extends JFrame {
     private DashboardPanel pnlDashboard;
     private TimetableGridPanel pnlGrid;
     private ThoiKhoaBieuPanel pnlSchedule;
+    private DeXuatDoiLichPanel pnlDeXuatDoiLich;
+    private DoiLichPanel pnlDoiLich;
+    private CurriculumPanel pnlCurriculum;
     private PhongHocPanel pnlRooms;
     private GiangVienPanel pnlTeachers;
+    private SinhVienPanel pnlStudents;
     private MonHocPanel pnlSubjects;
     private LopHocPanel pnlClasses;
     private ThongKePanel pnlStats;
     private TaiKhoanPanel pnlUsers;
+    private AuditLogPanel pnlAudit;
 
     private final List<SidebarButton> sidebarButtons = new ArrayList<>();
 
@@ -55,6 +65,7 @@ public class MainForm extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1280, 760);
         setMinimumSize(new Dimension(1024, 640));
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -73,24 +84,37 @@ public class MainForm extends JFrame {
                 () -> showCard(CARD_SCHEDULE),
                 () -> showCard(CARD_GRID),
                 () -> showCard(CARD_ROOMS),
-                () -> showCard(CARD_STATS)
+                () -> showCard(CARD_STATS),
+                () -> showCard(CARD_PROPOSE),
+                () -> showCard(CARD_WORKFLOW),
+                () -> showCard(CARD_CURRICULUM)
         );
         pnlGrid = new TimetableGridPanel();
         pnlSchedule = new ThoiKhoaBieuPanel();
+        pnlDeXuatDoiLich = new DeXuatDoiLichPanel();
+        pnlDoiLich = new DoiLichPanel();
+        pnlCurriculum = new CurriculumPanel();
         pnlRooms = new PhongHocPanel();
         pnlTeachers = new GiangVienPanel();
+        pnlStudents = new SinhVienPanel();
         pnlSubjects = new MonHocPanel();
         pnlClasses = new LopHocPanel();
         pnlStats = new ThongKePanel();
+        pnlAudit = new AuditLogPanel();
 
         pnlContent.add(pnlDashboard, CARD_DASHBOARD);
         pnlContent.add(pnlGrid, CARD_GRID);
         pnlContent.add(pnlSchedule, CARD_SCHEDULE);
+        pnlContent.add(pnlDeXuatDoiLich, CARD_PROPOSE);
+        pnlContent.add(pnlDoiLich, CARD_WORKFLOW);
+        pnlContent.add(pnlCurriculum, CARD_CURRICULUM);
         pnlContent.add(pnlRooms, CARD_ROOMS);
         pnlContent.add(pnlTeachers, CARD_TEACHERS);
+        pnlContent.add(pnlStudents, CARD_STUDENTS);
         pnlContent.add(pnlSubjects, CARD_SUBJECTS);
         pnlContent.add(pnlClasses, CARD_CLASSES);
         pnlContent.add(pnlStats, CARD_STATS);
+        pnlContent.add(pnlAudit, CARD_AUDIT);
 
         if (AuthService.getInstance().isAdmin()) {
             pnlUsers = new TaiKhoanPanel();
@@ -136,7 +160,7 @@ public class MainForm extends JFrame {
         rightProfile.setOpaque(false);
 
         TaiKhoan user = AuthService.getInstance().getCurrentUser();
-        String roleText = (user != null && user.isAdmin()) ? "ADMIN" : "NHÂN VIÊN";
+        String roleText = AuthService.getInstance().getRoleBadgeText();
         String nameText = (user != null) ? user.getHoTen() : "User";
 
         JLabel lblUser = new JLabel("Người dùng: " + nameText + " [" + roleText + "]");
@@ -161,22 +185,72 @@ public class MainForm extends JFrame {
         sidebar.setBorder(new EmptyBorder(12, 10, 12, 10));
 
         sidebarButtons.clear();
+        AuthService auth = AuthService.getInstance();
 
-        addSidebarButton(sidebar, "Trang Chủ", CARD_DASHBOARD);
-        addSidebarButton(sidebar, "Lưới TKB Tuần", CARD_GRID);
-        addSidebarButton(sidebar, "Xếp Lịch TKB", CARD_SCHEDULE);
-        sidebar.add(Box.createVerticalStrut(8));
-        sidebar.add(createSidebarSeparator("DANH MỤC"));
-        addSidebarButton(sidebar, "Phòng Học", CARD_ROOMS);
-        addSidebarButton(sidebar, "Giảng Viên", CARD_TEACHERS);
-        addSidebarButton(sidebar, "Môn Học", CARD_SUBJECTS);
-        addSidebarButton(sidebar, "Lớp Học", CARD_CLASSES);
-        sidebar.add(Box.createVerticalStrut(8));
-        sidebar.add(createSidebarSeparator("TIỆN ÍCH & HỆ THỐNG"));
-        addSidebarButton(sidebar, "Thống Kê & Báo Cáo", CARD_STATS);
+        // 1. Nhóm Chính
+        if (auth.canAccessDashboard()) {
+            addSidebarButton(sidebar, "Trang Chủ", CARD_DASHBOARD);
+        }
+        if (auth.canAccessTimetableGrid()) {
+            addSidebarButton(sidebar, "Lưới TKB Tuần", CARD_GRID);
+        }
+        if (auth.canAccessSchedule()) {
+            addSidebarButton(sidebar, "Xếp Lịch TKB", CARD_SCHEDULE);
+        }
 
-        if (AuthService.getInstance().isAdmin()) {
-            addSidebarButton(sidebar, "Quản Trị Tài Khoản", CARD_USERS);
+        // 2. Nhóm Quy Trình & Đào Tạo
+        boolean hasWorkflowGroup = auth.canProposeSchedule() || auth.canApproveSchedule() || auth.canAccessCurriculum();
+        if (hasWorkflowGroup) {
+            sidebar.add(Box.createVerticalStrut(8));
+            sidebar.add(createSidebarSeparator("QUY TRÌNH & ĐÀO TẠO"));
+            if (auth.canProposeSchedule()) {
+                addSidebarButton(sidebar, "Đề Xuất Đổi Lịch", CARD_PROPOSE);
+            }
+            if (auth.canApproveSchedule()) {
+                addSidebarButton(sidebar, "Duyệt Đổi Lịch", CARD_WORKFLOW);
+            }
+            if (auth.canAccessCurriculum()) {
+                addSidebarButton(sidebar, "Khung CTĐT 4 Năm", CARD_CURRICULUM);
+            }
+        }
+
+        // 3. Nhóm Danh Mục
+        boolean hasMasterGroup = auth.canAccessRooms() || auth.canAccessTeachers() || auth.canAccessStudents()
+                || auth.canAccessSubjects() || auth.canAccessClasses();
+        if (hasMasterGroup) {
+            sidebar.add(Box.createVerticalStrut(8));
+            sidebar.add(createSidebarSeparator("DANH MỤC"));
+            if (auth.canAccessRooms()) {
+                addSidebarButton(sidebar, "Phòng Học", CARD_ROOMS);
+            }
+            if (auth.canAccessTeachers()) {
+                addSidebarButton(sidebar, "Giảng Viên", CARD_TEACHERS);
+            }
+            if (auth.canAccessStudents()) {
+                addSidebarButton(sidebar, "Sinh Viên", CARD_STUDENTS);
+            }
+            if (auth.canAccessSubjects()) {
+                addSidebarButton(sidebar, "Môn Học", CARD_SUBJECTS);
+            }
+            if (auth.canAccessClasses()) {
+                addSidebarButton(sidebar, "Lớp Học", CARD_CLASSES);
+            }
+        }
+
+        // 4. Nhóm Tiện Ích & Hệ Thống
+        boolean hasSystemGroup = auth.canAccessStatistics() || auth.canAccessAuditLog() || auth.canManageUsers();
+        if (hasSystemGroup) {
+            sidebar.add(Box.createVerticalStrut(8));
+            sidebar.add(createSidebarSeparator("TIỆN ÍCH & HỆ THỐNG"));
+            if (auth.canAccessStatistics()) {
+                addSidebarButton(sidebar, "Thống Kê & Báo Cáo", CARD_STATS);
+            }
+            if (auth.canAccessAuditLog()) {
+                addSidebarButton(sidebar, "Nhật Ký Hệ Thống", CARD_AUDIT);
+            }
+            if (auth.canManageUsers()) {
+                addSidebarButton(sidebar, "Quản Trị Tài Khoản", CARD_USERS);
+            }
         }
 
         sidebar.add(Box.createVerticalGlue());
@@ -261,17 +335,32 @@ public class MainForm extends JFrame {
         btn.setActive(true);
     }
 
-    public void selectTabByIndex(int index) {
-        if (index >= 0 && index < sidebarButtons.size()) {
-            SidebarButton btn = sidebarButtons.get(index);
-            setActiveButton(btn);
-            for (java.awt.event.ActionListener al : btn.getActionListeners()) {
-                al.actionPerformed(new java.awt.event.ActionEvent(btn, java.awt.event.ActionEvent.ACTION_PERFORMED, null));
-            }
+    public int getSidebarButtonCount() {
+        return sidebarButtons.size();
+    }
+
+    public List<String> getSidebarButtonLabels() {
+        List<String> labels = new ArrayList<>();
+        for (SidebarButton b : sidebarButtons) {
+            labels.add(b.getText());
         }
+        return labels;
     }
 
     public void showCard(String cardName) {
+        AuthService auth = AuthService.getInstance();
+        if (CARD_SCHEDULE.equals(cardName) && !auth.canAccessSchedule()) cardName = CARD_DASHBOARD;
+        else if (CARD_PROPOSE.equals(cardName) && !auth.canProposeSchedule()) cardName = CARD_DASHBOARD;
+        else if (CARD_WORKFLOW.equals(cardName) && !auth.canApproveSchedule()) cardName = CARD_DASHBOARD;
+        else if (CARD_ROOMS.equals(cardName) && !auth.canAccessRooms()) cardName = CARD_DASHBOARD;
+        else if (CARD_TEACHERS.equals(cardName) && !auth.canAccessTeachers()) cardName = CARD_DASHBOARD;
+        else if (CARD_STUDENTS.equals(cardName) && !auth.canAccessStudents()) cardName = CARD_DASHBOARD;
+        else if (CARD_SUBJECTS.equals(cardName) && !auth.canAccessSubjects()) cardName = CARD_DASHBOARD;
+        else if (CARD_CLASSES.equals(cardName) && !auth.canAccessClasses()) cardName = CARD_DASHBOARD;
+        else if (CARD_STATS.equals(cardName) && !auth.canAccessStatistics()) cardName = CARD_DASHBOARD;
+        else if (CARD_AUDIT.equals(cardName) && !auth.canAccessAuditLog()) cardName = CARD_DASHBOARD;
+        else if (CARD_USERS.equals(cardName) && !auth.canManageUsers()) cardName = CARD_DASHBOARD;
+
         cardLayout.show(pnlContent, cardName);
 
         // Tự động làm mới dữ liệu khi chuyển tab
@@ -282,16 +371,28 @@ public class MainForm extends JFrame {
         } else if (CARD_SCHEDULE.equals(cardName) && pnlSchedule != null) {
             pnlSchedule.loadDropdownFilters();
             pnlSchedule.loadData();
+        } else if (CARD_PROPOSE.equals(cardName) && pnlDeXuatDoiLich != null) {
+            pnlDeXuatDoiLich.loadData();
+        } else if (CARD_WORKFLOW.equals(cardName) && pnlDoiLich != null) {
+            pnlDoiLich.loadData();
+        } else if (CARD_CURRICULUM.equals(cardName) && pnlCurriculum != null) {
+            pnlCurriculum.loadData();
         } else if (CARD_ROOMS.equals(cardName) && pnlRooms != null) {
             pnlRooms.loadData();
         } else if (CARD_TEACHERS.equals(cardName) && pnlTeachers != null) {
             pnlTeachers.loadData();
+        } else if (CARD_STUDENTS.equals(cardName) && pnlStudents != null) {
+            pnlStudents.loadData();
         } else if (CARD_SUBJECTS.equals(cardName) && pnlSubjects != null) {
             pnlSubjects.loadData();
         } else if (CARD_CLASSES.equals(cardName) && pnlClasses != null) {
             pnlClasses.loadData();
+        } else if (CARD_STATS.equals(cardName) && pnlStats != null) {
+            pnlStats.loadAllData();
         } else if (CARD_USERS.equals(cardName) && pnlUsers != null) {
             pnlUsers.loadData();
+        } else if (CARD_AUDIT.equals(cardName) && pnlAudit != null) {
+            pnlAudit.loadData();
         }
     }
 

@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<mxfile host="app.diagrams.net" modified="2026-09-10T00:33:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="arch_bigfont_cnj56" name="Kiến trúc hệ thống phân tầng">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="cell_2" value="SƠ ĐỒ KIẾN TRÚC HỆ THỐNG PHÂN TẦNG&amp;#xa;Hệ Thống Quản Lý Thời Khóa Biểu &amp;amp; Tài Nguyên Phòng Học - Đề Tài CNJ56" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=18;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1">
+          <mxGeometry as="geometry" x="24" y="20" width="912" height="68"/>
+        </mxCell>
+        <mxCell id="cell_3" value="TẦNG TRÌNH DIỄN&amp;#xa;(PRESENTATION LAYER - JAVA SWING)" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=16;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1">
+          <mxGeometry as="geometry" x="24" y="116" width="608" height="104"/>
+        </mxCell>
+        <mxCell id="cell_4" value="TẦNG ĐIỀU HƯỚNG &amp; TIẾP NHẬN&amp;#xa;(CONTROLLER LAYER - DISPATCHER)" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=16;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1">
+          <mxGeometry as="geometry" x="24" y="284" width="608" height="104"/>
+        </mxCell>
+        <mxCell id="cell_5" value="TẦNG NGHIỆP VỤ&amp;#xa;(SERVICE / BUSINESS LOGIC LAYER)" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=16;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1">
+          <mxGeometry as="geometry" x="24" y="452" width="608" height="104"/>
+        </mxCell>
+        <mxCell id="cell_6" value="TẦNG TRUY XUẤT DỮ LIỆU&amp;#xa;(DATA ACCESS OBJECT - DAO LAYER)" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=16;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1">
+          <mxGeometry as="geometry" x="24" y="620" width="608" height="104"/>
+        </mxCell>
+        <mxCell id="cell_7" value="TẦNG THỰC THỂ DỮ LIỆU&amp;#xa;(MODEL / ENTITY LAYER - POJO)" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=16;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1">
+          <mxGeometry as="geometry" x="24" y="788" width="608" height="104"/>
+        </mxCell>
+        <mxCell id="cell_8" value="CƠ SỞ DỮ LIỆU&amp;#xa;(DATABASE TIER - MYSQL SERVER 8.0)" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=16;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1">
+          <mxGeometry as="geometry" x="24" y="956" width="608" height="104"/>
+        </mxCell>
+        <mxCell id="cell_9" value="Yêu cầu ↓   ↑ Phản hồi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=classic;startArrow=classic;fontColor=#000000;fontSize=12;fontStyle=1;" edge="1" source="cell_3" target="cell_4">
+          <mxGeometry as="geometry" relative="1"/>
+        </mxCell>
+        <mxCell id="cell_10" value="Yêu cầu ↓   ↑ Phản hồi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=classic;startArrow=classic;fontColor=#000000;fontSize=12;fontStyle=1;" edge="1" source="cell_4" target="cell_5">
+          <mxGeometry as="geometry" relative="1"/>
+        </mxCell>
+        <mxCell id="cell_11" value="Yêu cầu ↓   ↑ Phản hồi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=classic;startArrow=classic;fontColor=#000000;fontSize=12;fontStyle=1;" edge="1" source="cell_5" target="cell_6">
+          <mxGeometry as="geometry" relative="1"/>
+        </mxCell>
+        <mxCell id="cell_12" value="Yêu cầu ↓   ↑ Phản hồi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=classic;startArrow=classic;fontColor=#000000;fontSize=12;fontStyle=1;" edge="1" source="cell_6" target="cell_7">
+          <mxGeometry as="geometry" relative="1"/>
+        </mxCell>
+        <mxCell id="cell_13" value="Yêu cầu ↓   ↑ Phản hồi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=classic;startArrow=classic;fontColor=#000000;fontSize=12;fontStyle=1;" edge="1" source="cell_7" target="cell_8">
+          <mxGeometry as="geometry" relative="1"/>
+        </mxCell>
+        <mxCell id="cell_14" value="TRỤC AN NINH &amp;amp; BỔ TRỢ&amp;#xa;(CROSS-CUTTING CONCERNS)" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=16;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1">
+          <mxGeometry as="geometry" x="656" y="116" width="280" height="944"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

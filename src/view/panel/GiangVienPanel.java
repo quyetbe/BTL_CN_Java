@@ -10,8 +10,10 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +27,9 @@ public class GiangVienPanel extends JPanel {
 
     private JTextField txtSearch;
     private JComboBox<String> cbFilterKhoa;
+    private PaginationBar paginationBar;
+
+    private List<GiangVien> currentList = new ArrayList<>();
 
     private JButton btnAdd;
     private JButton btnEdit;
@@ -58,10 +63,12 @@ public class GiangVienPanel extends JPanel {
 
         pnlFilter.add(new JLabel("Tìm kiếm:"));
         txtSearch = new JTextField(15);
+        txtSearch.addActionListener(e -> searchData());
         pnlFilter.add(txtSearch);
 
         pnlFilter.add(new JLabel("Khoa / Bộ môn:"));
         cbFilterKhoa = new JComboBox<>(new String[]{"TẤT CẢ"});
+        cbFilterKhoa.addActionListener(e -> searchData());
         pnlFilter.add(cbFilterKhoa);
 
         JButton btnSearch = UIUtil.createPrimaryButton("Lọc Dữ Liệu");
@@ -72,7 +79,7 @@ public class GiangVienPanel extends JPanel {
         add(pnlTop, BorderLayout.NORTH);
 
         // Center Table
-        String[] columns = {"Mã GV", "Họ và Tên", "Khoa / Bộ Môn", "Email", "Số Điện Thoại"};
+        String[] columns = {"STT", "Mã GV", "Họ và Tên", "Khoa / Bộ Môn", "Email", "Số Điện Thoại"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -82,17 +89,29 @@ public class GiangVienPanel extends JPanel {
 
         table = new JTable(tableModel);
         UIUtil.formatTable(table);
-        table.getColumnModel().getColumn(0).setPreferredWidth(90);
-        table.getColumnModel().getColumn(1).setPreferredWidth(180);
-        table.getColumnModel().getColumn(2).setPreferredWidth(200);
-        table.getColumnModel().getColumn(3).setPreferredWidth(180);
-        table.getColumnModel().getColumn(4).setPreferredWidth(120);
+        table.setRowHeight(34);
+        table.getColumnModel().getColumn(0).setPreferredWidth(55);
+        table.getColumnModel().getColumn(1).setPreferredWidth(90);
+        table.getColumnModel().getColumn(2).setPreferredWidth(180);
+        table.getColumnModel().getColumn(3).setPreferredWidth(200);
+        table.getColumnModel().getColumn(4).setPreferredWidth(180);
+        table.getColumnModel().getColumn(5).setPreferredWidth(120);
+
+        // Căn giữa TOÀN BỘ các cột trong bảng
+        UIUtil.centerAllColumns(table);
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(new LineBorder(UIUtil.BORDER_COLOR, 1));
         add(scrollPane, BorderLayout.CENTER);
 
-        // Bottom Action Buttons
+        // Bottom Actions & Pagination
+        JPanel pnlSouth = new JPanel(new BorderLayout(0, 4));
+        pnlSouth.setOpaque(false);
+
+        paginationBar = new PaginationBar(20);
+        paginationBar.setPageChangeListener(newPage -> renderCurrentPage());
+        pnlSouth.add(paginationBar, BorderLayout.NORTH);
+
         JPanel pnlBottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 6));
         pnlBottom.setOpaque(false);
 
@@ -120,7 +139,8 @@ public class GiangVienPanel extends JPanel {
         pnlBottom.add(btnAdd);
         pnlBottom.add(btnEdit);
         pnlBottom.add(btnDelete);
-        add(pnlBottom, BorderLayout.SOUTH);
+        pnlSouth.add(pnlBottom, BorderLayout.SOUTH);
+        add(pnlSouth, BorderLayout.SOUTH);
     }
 
     public void loadData() {
@@ -138,11 +158,24 @@ public class GiangVienPanel extends JPanel {
         String keyword = txtSearch.getText().trim();
         String khoa = (String) cbFilterKhoa.getSelectedItem();
 
-        List<GiangVien> list = giangVienDAO.search(keyword, khoa);
-        tableModel.setRowCount(0);
+        currentList = giangVienDAO.search(keyword, khoa);
+        paginationBar.update(1, 20, currentList.size());
+        renderCurrentPage();
+    }
 
-        for (GiangVien gv : list) {
+    private void renderCurrentPage() {
+        tableModel.setRowCount(0);
+        if (currentList == null || currentList.isEmpty()) return;
+
+        int page = paginationBar.getCurrentPage();
+        int pageSize = paginationBar.getPageSize();
+        List<GiangVien> pageList = PaginationBar.getPageSlice(currentList, page, pageSize);
+
+        int startStt = (page - 1) * pageSize + 1;
+        for (int i = 0; i < pageList.size(); i++) {
+            GiangVien gv = pageList.get(i);
             tableModel.addRow(new Object[]{
+                    startStt + i,
                     gv.getMaGv(),
                     gv.getHoTen(),
                     gv.getKhoaBoMon(),
@@ -168,7 +201,7 @@ public class GiangVienPanel extends JPanel {
             return;
         }
 
-        String maGv = (String) tableModel.getValueAt(selectedRow, 0);
+        String maGv = (String) tableModel.getValueAt(selectedRow, 1);
         GiangVien gv = giangVienDAO.getById(maGv);
         if (gv != null) {
             Frame parent = (Frame) SwingUtilities.getWindowAncestor(this);
@@ -192,8 +225,8 @@ public class GiangVienPanel extends JPanel {
             return;
         }
 
-        String maGv = (String) tableModel.getValueAt(selectedRow, 0);
-        String hoTen = (String) tableModel.getValueAt(selectedRow, 1);
+        String maGv = (String) tableModel.getValueAt(selectedRow, 1);
+        String hoTen = (String) tableModel.getValueAt(selectedRow, 2);
 
         if (giangVienDAO.isReferencedInSchedule(maGv)) {
             JOptionPane.showMessageDialog(this,

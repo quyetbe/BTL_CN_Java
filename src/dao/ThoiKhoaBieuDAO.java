@@ -60,10 +60,18 @@ public class ThoiKhoaBieuDAO {
     }
 
     /**
-     * Lọc danh sách thời khóa biểu theo nhiều tiêu chí.
+     * Lọc danh sách thời khóa biểu theo nhiều tiêu chí (tương thích ngược).
      */
     public List<ThoiKhoaBieu> getByFilter(String hocKy, String namHoc, Integer tuan,
                                           String maPhong, String maGv, String maLop, Integer thuTrongTuan) {
+        return getByFilter(hocKy, namHoc, tuan, maPhong, maGv, maLop, thuTrongTuan, null);
+    }
+
+    /**
+     * Lọc danh sách thời khóa biểu theo nhiều tiêu chí bao gồm Khóa học (K21, K22, K23, K24...).
+     */
+    public List<ThoiKhoaBieu> getByFilter(String hocKy, String namHoc, Integer tuan,
+                                          String maPhong, String maGv, String maLop, Integer thuTrongTuan, String khoaHoc) {
         List<ThoiKhoaBieu> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SELECT_BASE).append("WHERE 1=1 ");
         List<Object> params = new ArrayList<>();
@@ -101,6 +109,11 @@ public class ThoiKhoaBieuDAO {
         if (thuTrongTuan != null && thuTrongTuan >= 2 && thuTrongTuan <= 8) {
             sql.append("AND tkb.thu_trong_tuan = ? ");
             params.add(thuTrongTuan);
+        }
+
+        if (!ValidationUtil.isNullOrEmpty(khoaHoc) && !"TẤT CẢ".equalsIgnoreCase(khoaHoc) && !"TẤT CẢ KHÓA".equalsIgnoreCase(khoaHoc)) {
+            sql.append("AND lh.khoa_hoc = ? ");
+            params.add(khoaHoc.trim());
         }
 
         sql.append("ORDER BY tkb.thu_trong_tuan ASC, tkb.tiet_bat_dau ASC, tkb.ma_phong ASC");
@@ -247,14 +260,43 @@ public class ThoiKhoaBieuDAO {
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                list.add(rs.getString("nam_hoc"));
+                String y = rs.getString("nam_hoc");
+                if (y != null && !y.trim().isEmpty() && !list.contains(y.trim())) {
+                    list.add(y.trim());
+                }
             }
         } catch (SQLException e) {
             System.err.println("Lỗi getDistinctAcademicYears: " + e.getMessage());
         }
+        String[] defaults = {"2025-2026", "2024-2025", "2023-2024", "2022-2023", "2021-2022"};
+        for (String d : defaults) {
+            if (!list.contains(d)) {
+                list.add(d);
+            }
+        }
+        return list;
+    }
+
+    public List<String> getDistinctKhoaHoc() {
+        List<String> list = new ArrayList<>();
+        String sql = "SELECT DISTINCT khoa_hoc FROM lop_hoc WHERE khoa_hoc IS NOT NULL AND khoa_hoc != '' ORDER BY khoa_hoc ASC";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String k = rs.getString("khoa_hoc");
+                if (k != null && !k.trim().isEmpty() && !list.contains(k.trim())) {
+                    list.add(k.trim());
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi getDistinctKhoaHoc: " + e.getMessage());
+        }
         if (list.isEmpty()) {
-            list.add("2025-2026");
-            list.add("2024-2025");
+            list.add("K21");
+            list.add("K22");
+            list.add("K23");
+            list.add("K24");
         }
         return list;
     }

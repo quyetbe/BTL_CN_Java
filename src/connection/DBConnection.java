@@ -11,18 +11,20 @@ import java.sql.SQLException;
  */
 public class DBConnection {
 
-    private static final String HOST = "localhost";
-    private static final int PORT = 3306;
-    private static final String DB_NAME = "quanly_tkb_cnj56";
-    private static final String USER = "root";
-    private static final String PASSWORD = ""; // Mặc định trên XAMPP không có mật khẩu
+    private static final String HOST = AppConfig.getDbHost();
+    private static final int PORT = AppConfig.getDbPort();
+    private static final String DB_NAME = AppConfig.getDbName();
+    private static final String USER = AppConfig.getDbUser();
+    private static final String PASSWORD = AppConfig.getDbPassword();
 
     private static final String URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DB_NAME
             + "?useSSL=false"
             + "&allowPublicKeyRetrieval=true"
             + "&serverTimezone=Asia/Ho_Chi_Minh"
             + "&useUnicode=true"
-            + "&characterEncoding=UTF-8";
+            + "&characterEncoding=UTF-8"
+            + "&characterSetResults=UTF-8"
+            + "&connectionCollation=utf8mb4_unicode_ci";
 
     // Nạp driver MySQL Connector/J
     static {

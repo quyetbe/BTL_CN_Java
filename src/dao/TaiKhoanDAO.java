@@ -87,6 +87,23 @@ public class TaiKhoanDAO {
         return null;
     }
 
+    public boolean existsRole(String role, int excludeId) {
+        String sql = "SELECT COUNT(*) FROM tai_khoan WHERE vai_tro = ? AND id != ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, role);
+            ps.setInt(2, excludeId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi existsRole: " + e.getMessage());
+        }
+        return false;
+    }
+
     public boolean insert(TaiKhoan tk) {
         String sql = "INSERT INTO tai_khoan (ten_dang_nhap, mat_khau, ho_ten, email, vai_tro, trang_thai) "
                    + "VALUES (?, ?, ?, ?, ?, ?)";

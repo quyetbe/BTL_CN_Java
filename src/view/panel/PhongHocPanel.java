@@ -11,8 +11,10 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +30,9 @@ public class PhongHocPanel extends JPanel {
     private JComboBox<String> cbFilterToaNha;
     private JComboBox<String> cbFilterLoaiPhong;
     private JComboBox<String> cbFilterTrangThai;
+    private PaginationBar paginationBar;
+
+    private List<PhongHoc> currentList = new ArrayList<>();
 
     private JButton btnAdd;
     private JButton btnEdit;
@@ -61,18 +66,22 @@ public class PhongHocPanel extends JPanel {
 
         pnlFilter.add(new JLabel("Tìm kiếm:"));
         txtSearch = new JTextField(12);
+        txtSearch.addActionListener(e -> searchData());
         pnlFilter.add(txtSearch);
 
         pnlFilter.add(new JLabel("Tòa nhà:"));
         cbFilterToaNha = new JComboBox<>(new String[]{"TẤT CẢ"});
+        cbFilterToaNha.addActionListener(e -> searchData());
         pnlFilter.add(cbFilterToaNha);
 
         pnlFilter.add(new JLabel("Loại phòng:"));
         cbFilterLoaiPhong = new JComboBox<>(new String[]{"TẤT CẢ", "LY_THUYET", "THUC_HANH", "HOI_TRUONG"});
+        cbFilterLoaiPhong.addActionListener(e -> searchData());
         pnlFilter.add(cbFilterLoaiPhong);
 
         pnlFilter.add(new JLabel("Trạng thái:"));
         cbFilterTrangThai = new JComboBox<>(new String[]{"TẤT CẢ", "DANG_SU_DUNG", "BAO_TRI", "NGUNG_SU_DUNG"});
+        cbFilterTrangThai.addActionListener(e -> searchData());
         pnlFilter.add(cbFilterTrangThai);
 
         JButton btnSearch = UIUtil.createPrimaryButton("Lọc Dữ Liệu");
@@ -83,7 +92,7 @@ public class PhongHocPanel extends JPanel {
         add(pnlTop, BorderLayout.NORTH);
 
         // Center Table
-        String[] columns = {"Mã Phòng", "Tên Phòng Học", "Tòa Nhà", "Sức Chứa", "Loại Phòng", "Trang Thiết Bị", "Trạng Thái"};
+        String[] columns = {"STT", "Mã Phòng", "Tên Phòng Học", "Tòa Nhà", "Sức Chứa", "Loại Phòng", "Trang Thiết Bị", "Trạng Thái"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -93,19 +102,31 @@ public class PhongHocPanel extends JPanel {
 
         table = new JTable(tableModel);
         UIUtil.formatTable(table);
-        table.getColumnModel().getColumn(0).setPreferredWidth(90);
-        table.getColumnModel().getColumn(1).setPreferredWidth(160);
-        table.getColumnModel().getColumn(2).setPreferredWidth(100);
-        table.getColumnModel().getColumn(3).setPreferredWidth(80);
-        table.getColumnModel().getColumn(4).setPreferredWidth(130);
-        table.getColumnModel().getColumn(5).setPreferredWidth(260);
-        table.getColumnModel().getColumn(6).setPreferredWidth(120);
+        table.setRowHeight(34);
+        table.getColumnModel().getColumn(0).setPreferredWidth(55);
+        table.getColumnModel().getColumn(1).setPreferredWidth(90);
+        table.getColumnModel().getColumn(2).setPreferredWidth(160);
+        table.getColumnModel().getColumn(3).setPreferredWidth(100);
+        table.getColumnModel().getColumn(4).setPreferredWidth(80);
+        table.getColumnModel().getColumn(5).setPreferredWidth(130);
+        table.getColumnModel().getColumn(6).setPreferredWidth(260);
+        table.getColumnModel().getColumn(7).setPreferredWidth(120);
+
+        // Căn giữa TOÀN BỘ các cột trong bảng
+        UIUtil.centerAllColumns(table);
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(new LineBorder(UIUtil.BORDER_COLOR, 1));
         add(scrollPane, BorderLayout.CENTER);
 
-        // Bottom Action Buttons
+        // Bottom Actions & Pagination
+        JPanel pnlSouth = new JPanel(new BorderLayout(0, 4));
+        pnlSouth.setOpaque(false);
+
+        paginationBar = new PaginationBar(20);
+        paginationBar.setPageChangeListener(newPage -> renderCurrentPage());
+        pnlSouth.add(paginationBar, BorderLayout.NORTH);
+
         JPanel pnlBottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 6));
         pnlBottom.setOpaque(false);
 
@@ -135,7 +156,8 @@ public class PhongHocPanel extends JPanel {
         pnlBottom.add(btnAdd);
         pnlBottom.add(btnEdit);
         pnlBottom.add(btnDelete);
-        add(pnlBottom, BorderLayout.SOUTH);
+        pnlSouth.add(pnlBottom, BorderLayout.SOUTH);
+        add(pnlSouth, BorderLayout.SOUTH);
     }
 
     public void loadData() {
@@ -155,11 +177,24 @@ public class PhongHocPanel extends JPanel {
         String loaiPhong = (String) cbFilterLoaiPhong.getSelectedItem();
         String trangThai = (String) cbFilterTrangThai.getSelectedItem();
 
-        List<PhongHoc> list = phongHocDAO.search(keyword, toaNha, loaiPhong, trangThai);
-        tableModel.setRowCount(0);
+        currentList = phongHocDAO.search(keyword, toaNha, loaiPhong, trangThai);
+        paginationBar.update(1, 20, currentList.size());
+        renderCurrentPage();
+    }
 
-        for (PhongHoc p : list) {
+    private void renderCurrentPage() {
+        tableModel.setRowCount(0);
+        if (currentList == null || currentList.isEmpty()) return;
+
+        int page = paginationBar.getCurrentPage();
+        int pageSize = paginationBar.getPageSize();
+        List<PhongHoc> pageList = PaginationBar.getPageSlice(currentList, page, pageSize);
+
+        int startStt = (page - 1) * pageSize + 1;
+        for (int i = 0; i < pageList.size(); i++) {
+            PhongHoc p = pageList.get(i);
             tableModel.addRow(new Object[]{
+                    startStt + i,
                     p.getMaPhong(),
                     p.getTenPhong(),
                     p.getToaNha(),
@@ -187,7 +222,7 @@ public class PhongHocPanel extends JPanel {
             return;
         }
 
-        String maPhong = (String) tableModel.getValueAt(selectedRow, 0);
+        String maPhong = (String) tableModel.getValueAt(selectedRow, 1);
         PhongHoc p = phongHocDAO.getById(maPhong);
         if (p != null) {
             Frame parent = (Frame) SwingUtilities.getWindowAncestor(this);
@@ -211,8 +246,8 @@ public class PhongHocPanel extends JPanel {
             return;
         }
 
-        String maPhong = (String) tableModel.getValueAt(selectedRow, 0);
-        String tenPhong = (String) tableModel.getValueAt(selectedRow, 1);
+        String maPhong = (String) tableModel.getValueAt(selectedRow, 1);
+        String tenPhong = (String) tableModel.getValueAt(selectedRow, 2);
 
         if (phongHocDAO.isReferencedInSchedule(maPhong)) {
             JOptionPane.showMessageDialog(this,

@@ -138,25 +138,73 @@ public class UIUtil {
     /**
      * Tùy biến định dạng bảng JTable chuẩn đẹp.
      */
+    /**
+     * Tùy biến định dạng bảng JTable chuẩn đẹp, khoảng cách thoáng, căn giữa toàn bộ dữ liệu.
+     */
     public static void formatTable(JTable table) {
         table.setFont(FONT_REGULAR);
-        table.setRowHeight(28);
+        table.setRowHeight(34);
         table.setSelectionBackground(PRIMARY_LIGHT);
         table.setSelectionForeground(PRIMARY_DARK);
         table.setGridColor(BORDER_COLOR);
         table.setShowGrid(true);
+        table.setIntercellSpacing(new Dimension(1, 1));
 
         JTableHeader header = table.getTableHeader();
         header.setFont(FONT_BOLD);
         header.setBackground(new Color(241, 245, 249));
         header.setForeground(TEXT_DARK);
-        header.setPreferredSize(new Dimension(header.getWidth(), 32));
-        ((DefaultTableCellRenderer) header.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
+        header.setPreferredSize(new Dimension(header.getWidth(), 36));
 
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
+        headerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        headerRenderer.setFont(FONT_BOLD);
+        headerRenderer.setBackground(new Color(241, 245, 249));
+        headerRenderer.setForeground(TEXT_DARK);
+        header.setDefaultRenderer(headerRenderer);
+
+        // Renderer căn giữa tất cả chữ và số, có đệm trong (padding) 8px đẹp mắt
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                setHorizontalAlignment(JLabel.CENTER);
+                setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
+                return c;
+            }
+        };
+
+        table.setDefaultRenderer(Object.class, centerRenderer);
+        table.setDefaultRenderer(String.class, centerRenderer);
         table.setDefaultRenderer(Integer.class, centerRenderer);
         table.setDefaultRenderer(Double.class, centerRenderer);
+        table.setDefaultRenderer(Long.class, centerRenderer);
+        table.setDefaultRenderer(Float.class, centerRenderer);
+        table.setDefaultRenderer(Number.class, centerRenderer);
+        table.setDefaultRenderer(Boolean.class, centerRenderer);
+
+        // Áp dụng cho các cột đã tạo sẵn trong model
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+    }
+
+    /**
+     * Tiện ích căn giữa toàn bộ các cột trong JTable
+     */
+    public static void centerAllColumns(JTable table) {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                setHorizontalAlignment(JLabel.CENTER);
+                setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
+                return c;
+            }
+        };
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
     }
 
     /**
@@ -170,8 +218,12 @@ public class UIUtil {
             UIManager.put("Table.font", FONT_REGULAR);
             UIManager.put("TableHeader.font", FONT_BOLD);
             UIManager.put("TextField.font", FONT_REGULAR);
+            UIManager.put("TextArea.font", FONT_REGULAR);
             UIManager.put("ComboBox.font", FONT_REGULAR);
             UIManager.put("TabbedPane.font", FONT_BOLD);
+            UIManager.put("OptionPane.messageFont", FONT_REGULAR);
+            UIManager.put("OptionPane.buttonFont", FONT_BOLD);
+            UIManager.put("TitledBorder.font", FONT_BOLD);
         } catch (Exception ignored) {
         }
     }

@@ -29,7 +29,7 @@ public class LoginForm extends JFrame {
 
     private void initComponents() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(420, 390);
+        setSize(460, 480);
         setResizable(false);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -85,12 +85,48 @@ public class LoginForm extends JFrame {
         lblStatus.setFont(UIUtil.FONT_SMALL);
         lblStatus.setForeground(UIUtil.DANGER);
 
+        // Quick-selection roles (1 tài khoản duy nhất cho mỗi phân quyền)
+        JPanel pnlQuickRoles = new JPanel(new GridLayout(2, 3, 5, 5));
+        pnlQuickRoles.setOpaque(false);
+        pnlQuickRoles.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new Color(226, 232, 240)),
+                " Chọn nhanh tài khoản phân quyền demo: ",
+                javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+                javax.swing.border.TitledBorder.DEFAULT_POSITION,
+                UIUtil.FONT_SMALL,
+                UIUtil.TEXT_MUTED));
+
+        String[][] roles = {
+            {"Admin", "admin", "admin123"},
+            {"Ban Giám Hiệu", "bangiamhieu", "123456"},
+            {"Trưởng Khoa", "truongkhoa", "123456"},
+            {"Phòng Đào Tạo", "daotao", "123456"},
+            {"Giảng Viên", "giangvien", "123456"},
+            {"Sinh Viên", "sinhvien", "123456"}
+        };
+        for (String[] r : roles) {
+            JButton btnRole = new JButton(r[0]);
+            btnRole.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+            btnRole.setBackground(new Color(241, 245, 249));
+            btnRole.setForeground(UIUtil.TEXT_DARK);
+            btnRole.setFocusPainted(false);
+            btnRole.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            btnRole.addActionListener(e -> {
+                txtUsername.setText(r[1]);
+                txtPassword.setText(r[2]);
+                lblStatus.setText("Đã chọn vai trò: " + r[0]);
+                lblStatus.setForeground(UIUtil.PRIMARY);
+            });
+            pnlQuickRoles.add(btnRole);
+        }
+
         int row = 0;
         gbc.gridy = row++; pnlBody.add(lblUserTitle, gbc);
         gbc.gridy = row++; pnlBody.add(txtUsername, gbc);
         gbc.gridy = row++; pnlBody.add(lblPassTitle, gbc);
         gbc.gridy = row++; pnlBody.add(txtPassword, gbc);
-        gbc.gridy = row++; gbc.insets = new Insets(14, 0, 4, 0); pnlBody.add(btnLogin, gbc);
+        gbc.gridy = row++; gbc.insets = new Insets(10, 0, 4, 0); pnlBody.add(btnLogin, gbc);
+        gbc.gridy = row++; gbc.insets = new Insets(6, 0, 4, 0); pnlBody.add(pnlQuickRoles, gbc);
         gbc.gridy = row++; gbc.insets = new Insets(4, 0, 0, 0); pnlBody.add(lblStatus, gbc);
 
         add(pnlBody, BorderLayout.CENTER);
@@ -108,11 +144,6 @@ public class LoginForm extends JFrame {
         };
         txtUsername.addKeyListener(enterListener);
         txtPassword.addKeyListener(enterListener);
-    }
-
-    public void setCredentials(String username, String password) {
-        txtUsername.setText(username);
-        txtPassword.setText(password);
     }
 
     private void performLogin() {
@@ -143,6 +174,7 @@ public class LoginForm extends JFrame {
                 // Mở MainForm và đóng LoginForm
                 dispose();
                 MainForm mainForm = new MainForm();
+                mainForm.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 mainForm.setVisible(true);
             } else {
                 lblStatus.setForeground(UIUtil.DANGER);

@@ -40,12 +40,14 @@ public class ThoiKhoaBieuPanel extends JPanel {
 
     private JComboBox<String> cbFilterHocKy;
     private JComboBox<String> cbFilterNamHoc;
+    private JComboBox<String> cbFilterKhoa;
     private JSpinner spnrFilterTuan;
     private JCheckBox chkFilterTuan;
     private JComboBox<String> cbFilterThu;
     private JComboBox<String> cbFilterPhong;
     private JComboBox<String> cbFilterGv;
     private JComboBox<String> cbFilterLop;
+    private PaginationBar paginationBar;
 
     private JButton btnAdd;
     private JButton btnEdit;
@@ -96,6 +98,11 @@ public class ThoiKhoaBieuPanel extends JPanel {
         cbFilterNamHoc = new JComboBox<>(new String[]{"TẤT CẢ"});
         pnlRow1.add(cbFilterNamHoc);
 
+        pnlRow1.add(new JLabel("Khóa:"));
+        cbFilterKhoa = new JComboBox<>(new String[]{"TẤT CẢ KHÓA", "K21", "K22", "K23", "K24"});
+        cbFilterKhoa.addActionListener(e -> updateClassDropdownByCohort());
+        pnlRow1.add(cbFilterKhoa);
+
         chkFilterTuan = new JCheckBox("Lọc theo Tuần:");
         chkFilterTuan.setOpaque(false);
         spnrFilterTuan = new JSpinner(new SpinnerNumberModel(1, 1, 52, 1));
@@ -136,7 +143,7 @@ public class ThoiKhoaBieuPanel extends JPanel {
 
         // Center Table
         String[] columns = {
-                "ID", "Môn Học", "Loại", "Lớp Học", "Sĩ Số", "Giảng Viên",
+                "STT", "ID", "Môn Học", "Loại", "Khóa", "Lớp Học", "Sĩ Số", "Giảng Viên",
                 "Phòng Học", "Thứ", "Tiết Học", "Số Tiết", "Tuần Áp Dụng", "Kỳ / Năm", "Ghi Chú"
         };
         tableModel = new DefaultTableModel(columns, 0) {
@@ -148,25 +155,38 @@ public class ThoiKhoaBieuPanel extends JPanel {
 
         table = new JTable(tableModel);
         UIUtil.formatTable(table);
-        table.getColumnModel().getColumn(0).setPreferredWidth(45);
-        table.getColumnModel().getColumn(1).setPreferredWidth(180);
-        table.getColumnModel().getColumn(2).setPreferredWidth(80);
-        table.getColumnModel().getColumn(3).setPreferredWidth(120);
-        table.getColumnModel().getColumn(4).setPreferredWidth(60);
-        table.getColumnModel().getColumn(5).setPreferredWidth(150);
-        table.getColumnModel().getColumn(6).setPreferredWidth(110);
-        table.getColumnModel().getColumn(7).setPreferredWidth(70);
-        table.getColumnModel().getColumn(8).setPreferredWidth(80);
-        table.getColumnModel().getColumn(9).setPreferredWidth(60);
-        table.getColumnModel().getColumn(10).setPreferredWidth(90);
-        table.getColumnModel().getColumn(11).setPreferredWidth(110);
-        table.getColumnModel().getColumn(12).setPreferredWidth(140);
+        table.setRowHeight(34);
+        table.getColumnModel().getColumn(0).setPreferredWidth(50);
+        table.getColumnModel().getColumn(1).setPreferredWidth(45);
+        table.getColumnModel().getColumn(2).setPreferredWidth(170);
+        table.getColumnModel().getColumn(3).setPreferredWidth(75);
+        table.getColumnModel().getColumn(4).setPreferredWidth(55);
+        table.getColumnModel().getColumn(5).setPreferredWidth(100);
+        table.getColumnModel().getColumn(6).setPreferredWidth(55);
+        table.getColumnModel().getColumn(7).setPreferredWidth(140);
+        table.getColumnModel().getColumn(8).setPreferredWidth(100);
+        table.getColumnModel().getColumn(9).setPreferredWidth(70);
+        table.getColumnModel().getColumn(10).setPreferredWidth(80);
+        table.getColumnModel().getColumn(11).setPreferredWidth(55);
+        table.getColumnModel().getColumn(12).setPreferredWidth(85);
+        table.getColumnModel().getColumn(13).setPreferredWidth(100);
+        table.getColumnModel().getColumn(14).setPreferredWidth(120);
+
+        // Căn giữa TOÀN BỘ các cột trong bảng
+        UIUtil.centerAllColumns(table);
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(new LineBorder(UIUtil.BORDER_COLOR, 1));
         add(scrollPane, BorderLayout.CENTER);
 
-        // Bottom Actions
+        // Bottom Actions & Pagination
+        JPanel pnlSouth = new JPanel(new BorderLayout(0, 4));
+        pnlSouth.setOpaque(false);
+
+        paginationBar = new PaginationBar(20);
+        paginationBar.setPageChangeListener(newPage -> renderCurrentPage());
+        pnlSouth.add(paginationBar, BorderLayout.NORTH);
+
         JPanel pnlBottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 6));
         pnlBottom.setOpaque(false);
 
@@ -179,11 +199,13 @@ public class ThoiKhoaBieuPanel extends JPanel {
         btnRefresh.addActionListener(e -> {
             cbFilterHocKy.setSelectedIndex(0);
             cbFilterNamHoc.setSelectedIndex(0);
+            cbFilterKhoa.setSelectedIndex(0);
             chkFilterTuan.setSelected(false);
             spnrFilterTuan.setEnabled(false);
             cbFilterThu.setSelectedIndex(0);
             cbFilterPhong.setSelectedIndex(0);
             cbFilterGv.setSelectedIndex(0);
+            updateClassDropdownByCohort();
             cbFilterLop.setSelectedIndex(0);
             loadData();
         });
@@ -198,7 +220,8 @@ public class ThoiKhoaBieuPanel extends JPanel {
         pnlBottom.add(btnAdd);
         pnlBottom.add(btnEdit);
         pnlBottom.add(btnDelete);
-        add(pnlBottom, BorderLayout.SOUTH);
+        pnlSouth.add(pnlBottom, BorderLayout.SOUTH);
+        add(pnlSouth, BorderLayout.SOUTH);
     }
 
     public void loadDropdownFilters() {
@@ -206,6 +229,12 @@ public class ThoiKhoaBieuPanel extends JPanel {
         cbFilterNamHoc.addItem("TẤT CẢ");
         for (String y : thoiKhoaBieuDAO.getDistinctAcademicYears()) {
             cbFilterNamHoc.addItem(y);
+        }
+
+        cbFilterKhoa.removeAllItems();
+        cbFilterKhoa.addItem("TẤT CẢ KHÓA");
+        for (String k : thoiKhoaBieuDAO.getDistinctKhoaHoc()) {
+            cbFilterKhoa.addItem(k);
         }
 
         cbFilterPhong.removeAllItems();
@@ -220,9 +249,18 @@ public class ThoiKhoaBieuPanel extends JPanel {
             cbFilterGv.addItem(g.getMaGv() + " - " + g.getHoTen());
         }
 
+        updateClassDropdownByCohort();
+    }
+
+    private void updateClassDropdownByCohort() {
+        if (cbFilterLop == null) return;
+        String selKhoa = (String) cbFilterKhoa.getSelectedItem();
         cbFilterLop.removeAllItems();
         cbFilterLop.addItem("TẤT CẢ");
         for (LopHoc l : lopHocDAO.getAll()) {
+            if (selKhoa != null && !selKhoa.equals("TẤT CẢ KHÓA") && !selKhoa.equalsIgnoreCase(l.getKhoaHoc())) {
+                continue;
+            }
             cbFilterLop.addItem(l.getMaLop() + " - " + l.getTenLop());
         }
     }
@@ -248,14 +286,37 @@ public class ThoiKhoaBieuPanel extends JPanel {
         int thuIndex = cbFilterThu.getSelectedIndex();
         Integer thu = (thuIndex > 0) ? (thuIndex + 1) : null;
 
-        currentScheduleList = xepLichService.getScheduleList(hocKy, namHoc, tuan, maPhong, maGv, maLop, thu);
-        tableModel.setRowCount(0);
+        String selKhoa = (String) cbFilterKhoa.getSelectedItem();
+        String khoaHoc = (selKhoa != null && !selKhoa.equals("TẤT CẢ KHÓA")) ? selKhoa : null;
 
-        for (ThoiKhoaBieu tkb : currentScheduleList) {
+        currentScheduleList = xepLichService.getScheduleList(hocKy, namHoc, tuan, maPhong, maGv, maLop, thu, khoaHoc);
+        paginationBar.update(1, 20, currentScheduleList.size());
+        renderCurrentPage();
+    }
+
+    private void renderCurrentPage() {
+        tableModel.setRowCount(0);
+        if (currentScheduleList == null || currentScheduleList.isEmpty()) return;
+
+        int page = paginationBar.getCurrentPage();
+        int pageSize = paginationBar.getPageSize();
+        List<ThoiKhoaBieu> pageList = PaginationBar.getPageSlice(currentScheduleList, page, pageSize);
+
+        int startStt = (page - 1) * pageSize + 1;
+        for (int i = 0; i < pageList.size(); i++) {
+            ThoiKhoaBieu tkb = pageList.get(i);
+            String khoaLop = "";
+            LopHoc lh = lopHocDAO.getById(tkb.getMaLop());
+            if (lh != null && lh.getKhoaHoc() != null) {
+                khoaLop = lh.getKhoaHoc();
+            }
+
             tableModel.addRow(new Object[]{
+                    startStt + i,
                     tkb.getId(),
                     tkb.getMaMon() + " - " + tkb.getTenMon(),
                     "THUC_HANH".equalsIgnoreCase(tkb.getLoaiMon()) ? "Thực hành" : "Lý thuyết",
+                    khoaLop,
                     tkb.getMaLop(),
                     tkb.getSiSoLop(),
                     tkb.getHoTenGv(),
@@ -286,7 +347,7 @@ public class ThoiKhoaBieuPanel extends JPanel {
             return;
         }
 
-        int id = (int) tableModel.getValueAt(selectedRow, 0);
+        int id = (int) tableModel.getValueAt(selectedRow, 1);
         ThoiKhoaBieu tkb = thoiKhoaBieuDAO.getById(id);
         if (tkb != null) {
             Frame parent = (Frame) SwingUtilities.getWindowAncestor(this);
@@ -305,11 +366,11 @@ public class ThoiKhoaBieuPanel extends JPanel {
             return;
         }
 
-        int id = (int) tableModel.getValueAt(selectedRow, 0);
-        String mon = (String) tableModel.getValueAt(selectedRow, 1);
-        String lop = (String) tableModel.getValueAt(selectedRow, 3);
-        String thu = (String) tableModel.getValueAt(selectedRow, 7);
-        String tiet = (String) tableModel.getValueAt(selectedRow, 8);
+        int id = (int) tableModel.getValueAt(selectedRow, 1);
+        String mon = (String) tableModel.getValueAt(selectedRow, 2);
+        String lop = (String) tableModel.getValueAt(selectedRow, 5);
+        String thu = (String) tableModel.getValueAt(selectedRow, 9);
+        String tiet = (String) tableModel.getValueAt(selectedRow, 10);
 
         int choice = JOptionPane.showConfirmDialog(this,
                 "Bạn có chắc chắn muốn xóa lịch học sau không?\n\n"

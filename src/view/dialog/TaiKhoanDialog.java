@@ -63,7 +63,7 @@ public class TaiKhoanDialog extends JDialog {
         txtMatKhau = new JPasswordField(15);
         txtHoTen = new JTextField(15);
         txtEmail = new JTextField(15);
-        cbVaiTro = new JComboBox<>(new String[]{"NHANVIEN (Nhân viên đào tạo)", "ADMIN (Quản trị viên)"});
+        cbVaiTro = new JComboBox<>(ROLE_LABELS);
         chkTrangThai = new JCheckBox("Kích hoạt hoạt động", true);
         chkTrangThai.setOpaque(false);
 
@@ -106,12 +106,29 @@ public class TaiKhoanDialog extends JDialog {
         panel.add(comp, gbc);
     }
 
+    private static final String[] ROLE_NAMES = {
+        "ADMIN", "BAN_GIAM_HIEU", "TRUONG_KHOA", "PHONG_DAO_TAO", "GIANG_VIEN", "SINH_VIEN"
+    };
+    private static final String[] ROLE_LABELS = {
+        "ADMIN (Quản trị viên)",
+        "BAN_GIAM_HIEU (Ban Giám Hiệu)",
+        "TRUONG_KHOA (Trưởng Khoa)",
+        "PHONG_DAO_TAO (Phòng Đào Tạo)",
+        "GIANG_VIEN (Giảng Viên)",
+        "SINH_VIEN (Sinh Viên)"
+    };
+
     private void fillData(TaiKhoan tk) {
         txtTenDangNhap.setText(tk.getTenDangNhap());
         txtTenDangNhap.setEditable(false);
         txtHoTen.setText(tk.getHoTen());
         txtEmail.setText(tk.getEmail());
-        cbVaiTro.setSelectedIndex("ADMIN".equalsIgnoreCase(tk.getVaiTro()) ? 1 : 0);
+        for (int i = 0; i < ROLE_NAMES.length; i++) {
+            if (ROLE_NAMES[i].equalsIgnoreCase(tk.getVaiTro())) {
+                cbVaiTro.setSelectedIndex(i);
+                break;
+            }
+        }
         chkTrangThai.setSelected(tk.isTrangThai());
     }
 
@@ -119,7 +136,7 @@ public class TaiKhoanDialog extends JDialog {
         String username = txtTenDangNhap.getText().trim();
         String hoTen = txtHoTen.getText().trim();
         String email = txtEmail.getText().trim();
-        String vaiTro = cbVaiTro.getSelectedIndex() == 1 ? "ADMIN" : "NHANVIEN";
+        String vaiTro = ROLE_NAMES[cbVaiTro.getSelectedIndex()];
         boolean trangThai = chkTrangThai.isSelected();
 
         if (ValidationUtil.isNullOrEmpty(username)) {
@@ -135,6 +152,15 @@ public class TaiKhoanDialog extends JDialog {
         if (!ValidationUtil.isNullOrEmpty(email) && !ValidationUtil.isValidEmail(email)) {
             JOptionPane.showMessageDialog(this, "Email không hợp lệ!", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
             txtEmail.requestFocus();
+            return;
+        }
+
+        // Quy định: Mỗi phân quyền chỉ 1 tài khoản đăng nhập
+        if (taiKhoanDAO.existsRole(vaiTro, tkToEdit != null ? tkToEdit.getId() : 0)) {
+            JOptionPane.showMessageDialog(this,
+                    "Quy định hệ thống: Mỗi phân quyền chỉ được phép có 1 tài khoản đăng nhập duy nhất!\n"
+                            + "Phân quyền '" + vaiTro + "' hiện đã có tài khoản trong hệ thống.",
+                    "Trùng lặp phân quyền", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
