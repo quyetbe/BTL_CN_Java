@@ -23,7 +23,7 @@ B?c Ninh ? 2026
 # DANH M?C H?NH ?NH
 
 - **H?nh 2.1:** Bi?u ?? ph?n c?p ch?c n?ng h? th?ng (BFD) [Thi?t k? tr?n Draw.io]
-- **H?nh 2.2:** S? ?? ki?n tr?c h? th?ng ph?n t?ng t?ch h?p Nh?t k? h? th?ng (Audit Log) [Thi?t k? tr?n Draw.io]
+- **Hình 2.2:** Sơ đồ kiến trúc hệ thống phân tầng tích hợp Tác nhân người dùng và Audit Log [Thiết kế trên Draw.io]
 - **H?nh 2.3:** M? h?nh li?n k?t th?c th? (ERD)
 - **H?nh 2.4:** M? h?nh v?t l? c? s? d? li?u (Physical Data Model)
 - **H?nh 3.1:** Giao di?n ??ng nh?p h? th?ng & Quick Login 6 vai tr? (LoginForm)
@@ -191,10 +191,11 @@ Bi?u ?? ph?n c?p ch?c n?ng (Business Function Diagram - BFD) ???c thi?t k? chi t
 ## 2.2. Ki?n tr?c h? th?ng ph?n t?ng (Layered Architecture)
 H? th?ng ???c thi?t k? theo m? h?nh **Ki?n tr?c Ph?n t?ng (Layered Architecture)** chu?n c?ng nghi?p k?t h?p t?ng ?i?u h??ng (Controller Layer) v? Tr?c An ninh - B? tr? (Cross-Cutting Concerns) ch?y d?c to?n b? h? th?ng. (S? ?? ???c thi?t k? chi ti?t b?ng c?ng c? Draw.io t?i `docs/architecture/kientruc_hethong_phantang.drawio`).
 
-![H?nh 2.2: S? ?? ki?n tr?c h? th?ng ph?n t?ng](docs/images/hinh_2_2_kientruc_hethong_moi.png)
-*H?nh 2.2: S? ?? ki?n tr?c h? th?ng ph?n t?ng t?ch h?p Nh?t k? h? th?ng (Audit Log) [Thi?t k? tr?n Draw.io]*
+![Hình 2.2: Sơ đồ kiến trúc hệ thống phân tầng tích hợp Tác nhân người dùng](docs/images/hinh_2_2_kientruc_hethong_moi.png)
+*Hình 2.2: Sơ đồ kiến trúc hệ thống phân tầng tích hợp Tác nhân người dùng và Audit Log [Thiết kế trên Draw.io]*
 
 ### 2.2.1. Ph?n t?ch chi ti?t c?c t?ng ki?n tr?c:
+0. **Tầng Tác nhân người dùng (Actors / Roles - 6 vai trò RBAC):** Điểm khởi đầu của mọi tương tác người dùng vào hệ thống bao gồm: Quản Trị Viên (Admin), Ban Giám Hiệu, Phòng Đào Tạo, Trưởng Khoa / Bộ Môn, Giảng Viên, Sinh Viên với các quyền hạn và phạm vi giao diện được phân lập nghiêm ngặt.
 1. **T?ng Tr?nh di?n (Presentation Layer - Java Swing & Flat UI):** Ch?u tr?ch nhi?m t??ng t?c ng??i d?ng: `LoginForm`, `MainForm` (?i?u ph?i qua CardLayout), `TimetableGridPanel` (ma tr?n 12 ti?t x 7 ng?y, Zoom in/out, Block View), `ThoiKhoaBieuPanel`, `DeXuatDoiLichPanel`, `DoiLichPanel`, `CurriculumPanel`, `SinhVienPanel`, `AuditLogPanel`, `ThongKePanel`, `TaiKhoanPanel`, `PaginationBar`.
 2. **T?ng ?i?u h??ng & Ti?p nh?n (Controller Layer):** C?u n?i trung gian ti?p nh?n s? ki?n t? View, tr?ch xu?t form, ki?m tra h?p l? s? b? v? ?y quy?n x? l? cho Service: `AuthController`, `TimetableController`, `CurriculumController`, `RescheduleController`, `AuditController`, `UserController`, `WebServer` (REST API).
 3. **T?ng Nghi?p v? (Service Layer):** H?t nh?n x? l? logic v? thu?t to?n:
